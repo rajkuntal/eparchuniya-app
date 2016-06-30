@@ -29,7 +29,7 @@ import com.eparchuniya.app.domain.EmployeeAddress;
 import com.eparchuniya.app.domain.OrderSummary;
 import com.eparchuniya.app.domain.Store;
 import com.eparchuniya.app.domain.UserGroup;
-import com.eparchuniya.app.service.EmployeeService;
+
 
 @RestController
 public class HomeController {
@@ -168,7 +168,7 @@ public class HomeController {
 	@RequestMapping(value = "/addordersummary", method = RequestMethod.POST)
 	public void addEmp(@RequestBody OrderSummary orderSummary) {
 		orderSummaryDao.addOrderSummary(orderSummary);
-		//Check
+		//Check Hello
 	}
 //	
 //	@RequestMapping(value="/adddesignation", method = RequestMethod.POST)
