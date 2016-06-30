@@ -168,6 +168,7 @@ public class HomeController {
 	@RequestMapping(value = "/addordersummary", method = RequestMethod.POST)
 	public void addEmp(@RequestBody OrderSummary orderSummary) {
 		orderSummaryDao.addOrderSummary(orderSummary);
+		//Check
 	}
 //	
 //	@RequestMapping(value="/adddesignation", method = RequestMethod.POST)
