@@ -11,8 +11,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "inventory_item_stock")
-public class InventoryItemStock implements Serializable{
+@Table(name = "inventory_stock")
+public class InventoryStock implements Serializable{
 	
 	/**
 	 * 
@@ -30,12 +30,12 @@ public class InventoryItemStock implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "unit_type_id")
-	private IinventoryItemUnitType itemUnitType;
+	private InventoryUnitType itemUnitType;
 	
 	@Column(name = "quantity")
 	private Double quantity;
 
-	public InventoryItemStock() {
+	public InventoryStock() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -56,11 +56,11 @@ public class InventoryItemStock implements Serializable{
 		this.store = store;
 	}
 
-	public IinventoryItemUnitType getItemUnitType() {
+	public InventoryUnitType getItemUnitType() {
 		return itemUnitType;
 	}
 
-	public void setItemUnitType(IinventoryItemUnitType itemUnitType) {
+	public void setItemUnitType(InventoryUnitType itemUnitType) {
 		this.itemUnitType = itemUnitType;
 	}
 

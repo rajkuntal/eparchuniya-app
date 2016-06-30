@@ -3,19 +3,22 @@ package com.eparchuniya.app.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "adm_customer")
+@Table(name = "cust_customer")
 public class Customer implements Serializable {
 	
 	/**
@@ -45,6 +48,17 @@ public class Customer implements Serializable {
 	@Column(name = "email_id", nullable = true)
 	private String emailId;
 	
+	@Column(name = "mobile_number", nullable = false, unique = true)
+	@JoinTable(name = "cust_customer_mobile")
+	@ElementCollection(targetClass = Long.class)
+	private Set<Long> mobileNumbers;
+	
+	@OneToMany
+	@JoinTable(name = "cust_customer_address"
+				, joinColumns = @JoinColumn(name = "customer_id")
+				, inverseJoinColumns = @JoinColumn(name = "cust_address_id"))
+	private Set<CustomerAddress> customerAddresses;
+	
 	@ManyToOne
 	@JoinColumn(name = "store_id")
 	private Store store;
@@ -55,17 +69,19 @@ public class Customer implements Serializable {
 	@Column(name = "blocked")
 	private Boolean blocked;
 	
-	@Column(name = "created_ts", nullable = false)
+	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
+	@ManyToOne
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts", nullable = false)
+	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;	
+	@ManyToOne
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
 	public Customer() {
 		super();
@@ -160,11 +176,11 @@ public class Customer implements Serializable {
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -176,14 +192,12 @@ public class Customer implements Serializable {
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	
-	
 
 }

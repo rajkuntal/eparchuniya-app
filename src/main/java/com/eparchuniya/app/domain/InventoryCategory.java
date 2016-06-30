@@ -12,8 +12,8 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "inventory_item_category")
-public class InventoryItemCategory implements Serializable{
+@Table(name = "inventory_category")
+public class InventoryCategory implements Serializable{
 	
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class InventoryItemCategory implements Serializable{
 	@Column(name = "modified_by", nullable = false)
 	private int modifiedBy;
 
-	public InventoryItemCategory() {
+	public InventoryCategory() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

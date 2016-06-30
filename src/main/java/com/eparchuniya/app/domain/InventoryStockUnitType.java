@@ -13,8 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "inventory_item_stock_unit_type")
-public class InventoryItemStockUnitType implements Serializable {
+@Table(name = "inventory_stock_unit_type")
+public class InventoryStockUnitType implements Serializable {
 	
 	/**
 	 * 
@@ -48,7 +48,7 @@ public class InventoryItemStockUnitType implements Serializable {
 	@Column(name = "modified_by", nullable = false)
 	private int modifiedBy;
 
-	public InventoryItemStockUnitType() {
+	public InventoryStockUnitType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

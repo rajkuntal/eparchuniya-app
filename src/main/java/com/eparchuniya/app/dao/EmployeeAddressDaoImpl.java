@@ -19,8 +19,6 @@ public class EmployeeAddressDaoImpl implements EmployeeAddressDao {
 		
 		java.sql.Timestamp timeStamp = new java.sql.Timestamp(new java.util.Date().getTime());
 		
-		employeeAddress.setCreatedBY(1);
-		employeeAddress.setModifiedBy(1);
 		employeeAddress.setCreatedTs(timeStamp);
 		employeeAddress.setModifiedTs(timeStamp);
 		

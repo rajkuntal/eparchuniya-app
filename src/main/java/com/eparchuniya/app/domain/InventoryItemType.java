@@ -21,8 +21,8 @@ public class InventoryItemType implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "item_id")
-	private int itemId;
+	@Column(name = "item_type_id")
+	private int itemTypeId;
 	
 	@Column(name = "code", nullable = false)
 	private String code;
@@ -48,11 +48,11 @@ public class InventoryItemType implements Serializable{
 	}
 
 	public int getItemId() {
-		return itemId;
+		return itemTypeId;
 	}
 
 	public void setItemId(int itemId) {
-		this.itemId = itemId;
+		this.itemTypeId = itemId;
 	}
 
 	public String getCode() {

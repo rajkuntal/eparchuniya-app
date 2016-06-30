@@ -22,7 +22,7 @@ public class OrderSummary implements Serializable {
 	private static final long serialVersionUID = 448223098152771991L;
 
 	@Id
-	@GenericGenerator(name = "order_id", strategy="com.eparchuniya.app.domain.common.util.OrderIdGenerator")
+	@GenericGenerator(name = "order_id", strategy="com.eparchuniya.app.common.util.OrderIdGenerator")
 	@GeneratedValue(generator = "order_id")
 	private String orderId;
 	
@@ -41,6 +41,10 @@ public class OrderSummary implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "status_id")
 	private OrderStatus orderStatus;
+	
+	@Column(name = "call_duration")
+	private Double callDuration;
+	
 	
 
 	public OrderSummary() {

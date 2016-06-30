@@ -9,11 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "adm_designation")
+@Table(name = "emp_designation")
 public class Designation implements  Serializable{
 	
 	/**
@@ -35,17 +37,19 @@ public class Designation implements  Serializable{
 	@OneToMany(mappedBy = "designation")
 	private Set<Employee> employees;
 
-	@Column(name = "created_ts")
+	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@Column(name = "created_by")
-	private int createdBY;
+	@ManyToOne
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts")
+	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@Column(name = "modified_by")
-	private int modifiedBy;
+	@ManyToOne
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
 	public Designation() {
 		super();
@@ -92,12 +96,12 @@ public class Designation implements  Serializable{
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBY() {
-		return createdBY;
+	public User getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setCreatedBY(int createdBY) {
-		this.createdBY = createdBY;
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Timestamp getModifiedTs() {
@@ -108,11 +112,11 @@ public class Designation implements  Serializable{
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 	

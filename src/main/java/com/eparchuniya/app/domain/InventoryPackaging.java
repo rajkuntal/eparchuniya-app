@@ -12,13 +12,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "inventory_item_packaging_type")
-public class InventoryItemPackagingType {
+@Table(name = "inventory_packaging")
+public class InventoryPackaging {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "packaging_type_id")
-	private int packagingTypeId;
+	@Column(name = "packaging_id")
+	private int packagingId;
 	
 	@ManyToOne
 	@JoinColumn(name = "item_type")
@@ -45,17 +45,17 @@ public class InventoryItemPackagingType {
 	@Column(name = "modified_by", nullable = false)
 	private int modifiedBy;
 
-	public InventoryItemPackagingType() {
+	public InventoryPackaging() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public int getPackagingTypeId() {
-		return packagingTypeId;
+		return packagingId;
 	}
 
 	public void setPackagingTypeId(int packagingTypeId) {
-		this.packagingTypeId = packagingTypeId;
+		this.packagingId = packagingTypeId;
 	}
 
 	public InventoryItemType getItemType() {

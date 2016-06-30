@@ -66,9 +66,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     	
     	java.sql.Timestamp timeStamp = new java.sql.Timestamp(new java.util.Date().getTime());
     	
-    	employee.setcreatedBy(2);
     	employee.setCreatedTs(timeStamp);
-    	employee.setModifiedBy(2);
     	employee.setModifiedTs(timeStamp);
     	employee.setIsActive(false);
     	employee.setJoiningDate(timeStamp);

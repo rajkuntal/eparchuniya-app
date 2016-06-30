@@ -18,8 +18,6 @@ public class DesignationDaoImpl implements DesignationDao{
 	public void addDesignation(Designation designation) {
 		
 		java.sql.Timestamp timeStamp = new java.sql.Timestamp(new java.util.Date().getTime());
-		designation.setCreatedBY(1);
-		designation.setModifiedBy(1);
 		designation.setCreatedTs(timeStamp);
 		designation.setModifiedTs(timeStamp);
 		

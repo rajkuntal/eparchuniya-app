@@ -2,6 +2,7 @@ package com.eparchuniya.app.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -29,7 +32,10 @@ public class InventoryItem implements Serializable {
 	@Column(name = "code", nullable = false)
 	private String code;
 	
-	@Column(name = "name", nullable = false)
+	@Column(name = "display_name", nullable = false)
+	private String displayName;
+	
+	@Column(name = "name")
 	private String name;
 	
 	@Column(name = "brand_name", nullable = false)
@@ -37,15 +43,27 @@ public class InventoryItem implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	private InventoryItemCategory itemCategory;
+	private InventoryCategory category;
 	
 	@ManyToOne
 	@JoinColumn(name = "item_type_id")
 	private InventoryItemType itemType;
 	
 	@ManyToOne
-	@JoinColumn(name = "item_unit_type_id")
-	private IinventoryItemUnitType itemUnitType;
+	@JoinColumn(name = "item_unit_id")
+	private InventoryUnitType unit;
+	
+	@ManyToMany
+	@JoinTable(name = "inventory_item_stock_unit"
+				, joinColumns = @JoinColumn(name = "item_id")
+				, inverseJoinColumns = @JoinColumn(name = "stock_unit_type_id"))
+	private Set<InventoryStockUnitType> inventoryStockUnitTypes;
+	
+	@ManyToMany
+	@JoinTable(name = "inventory_item_packaging"
+				, joinColumns = @JoinColumn(name = "item_id")
+				, inverseJoinColumns = @JoinColumn(name = "packaging_id"))
+	private Set<InventoryPackaging> inventoryPackagingTypes;
 	
 	@Column(name = "created_ts", nullable = false)
 	private Timestamp createdTs;

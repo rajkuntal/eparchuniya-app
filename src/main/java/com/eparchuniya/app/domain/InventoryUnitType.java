@@ -11,8 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "inventory_item_unit_type")
-public class IinventoryItemUnitType implements Serializable{
+@Table(name = "inventory_unit_type")
+public class InventoryUnitType implements Serializable{
 	/**
 	 * 
 	 */
@@ -41,7 +41,7 @@ public class IinventoryItemUnitType implements Serializable{
 	@Column(name = "modified_by", nullable = false)
 	private int modifiedBy;
 
-	public IinventoryItemUnitType() {
+	public InventoryUnitType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

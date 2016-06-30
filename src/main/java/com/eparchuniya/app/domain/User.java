@@ -2,6 +2,7 @@ package com.eparchuniya.app.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,11 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "adm_user")
+@Table(name = "admin_user")
 public class User implements Serializable {
 	
 	/**
@@ -26,11 +29,18 @@ public class User implements Serializable {
 	@Column(name = "user_id")
 	private int userId;
 	
+	@Column(name = "password", nullable = false, length = 25)
 	private String password;
 	
 	@OneToOne
-	@JoinColumn(name = "employee_id")
+	@JoinColumn(name = "employee_id", nullable = false)
 	private Employee employee;
+	
+	@ManyToMany
+	@JoinTable(name = "admin_user_role_mapping"
+				,joinColumns = @JoinColumn(name = "user_id")
+				,inverseJoinColumns = @JoinColumn(name = "role_id", unique = false))
+	private Set<UserRole> userRoles;
 	
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
