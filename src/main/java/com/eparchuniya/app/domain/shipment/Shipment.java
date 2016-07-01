@@ -1,4 +1,4 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.shipment;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,10 +13,14 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.eparchuniya.app.domain.Employee;
+import com.eparchuniya.app.domain.Store;
+import com.eparchuniya.app.domain.User;
+
 
 @Entity
 @Table(name = "shipment_summary")
-public class ShipmentSummary implements Serializable{
+public class Shipment implements Serializable{
 	
 	/**
 	 * 
@@ -35,7 +39,7 @@ public class ShipmentSummary implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "status_id")
-	private ShipmentStatus shipmentStatus;
+	private Status shipmentStatus;
 	
 	@ManyToOne
 	@JoinColumn(name = "assigned_emp_id")
@@ -78,7 +82,7 @@ public class ShipmentSummary implements Serializable{
 	@JoinColumn(name = "completed_by")
 	private User completedBy;
 
-	public ShipmentSummary() {
+	public Shipment() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -99,11 +103,11 @@ public class ShipmentSummary implements Serializable{
 		this.store = store;
 	}
 
-	public ShipmentStatus getShipmentStatus() {
+	public Status getShipmentStatus() {
 		return shipmentStatus;
 	}
 
-	public void setShipmentStatus(ShipmentStatus shipmentStatus) {
+	public void setShipmentStatus(Status shipmentStatus) {
 		this.shipmentStatus = shipmentStatus;
 	}
 

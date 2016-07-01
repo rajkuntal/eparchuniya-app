@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eparchuniya.app.dao.UserGroupDAO;
-import com.eparchuniya.app.domain.UserGroup;
+import com.eparchuniya.app.domain.example.UserGroup;
 
 @RestController
 public class UserGroupRestController {

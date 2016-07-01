@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,47 +29,47 @@ public class EmployeeAddress implements Serializable{
 	@Column(name = "emp_address_id")
 	private int empAddressId;
 	
-	@Column(name = "house_number")
+	@Column(name = "house_number", length = 20)
 	private String houseNumber;
 	
-	@Column(name = "colony")
+	@Column(name = "colony", nullable = false, length = 50)
 	private String colony;
 	
-	@Column(name = "street_1")
+	@Column(name = "street", length = 100)
 	private String street1;
 	
-	@Column(name = "street_2")
-	private String street2;
+	@Column(name = "ward_number")
+	private int wardNumber;
 	
-	@Column(name = "landmark")
+	@Column(name = "landmark", length = 50)
 	private String landmark;
 	
-	@Column(name = "village_city")
+	@Column(name = "village_city", nullable = false, length = 50)
 	private String villageCity;
 	
-	@Column(name = "tehsil")
+	@Column(name = "tehsil", nullable = false, length = 50)
 	private String tehsil;
 	
-	@Column(name = "District")
+	@Column(name = "District", nullable = false, length = 50)
 	private String district;
 	
-	@Column(name = "state")
+	@Column(name = "state", nullable = false, length = 50)
 	private String state;
 	
-	@Column(name = "pincode")
-	private String pincode;
+	@Column(name = "pincode", nullable = false)
+	private Long pincode;
 	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 	
@@ -111,14 +113,6 @@ public class EmployeeAddress implements Serializable{
 		this.street1 = street1;
 	}
 
-	public String getStreet2() {
-		return street2;
-	}
-
-	public void setStreet2(String street2) {
-		this.street2 = street2;
-	}
-
 	public String getLandmark() {
 		return landmark;
 	}
@@ -159,11 +153,11 @@ public class EmployeeAddress implements Serializable{
 		this.state = state;
 	}
 
-	public String getPincode() {
+	public Long getPincode() {
 		return pincode;
 	}
 
-	public void setPincode(String pincode) {
+	public void setPincode(Long pincode) {
 		this.pincode = pincode;
 	}
 

@@ -1,4 +1,4 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.inventory;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -8,52 +8,49 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.eparchuniya.app.domain.User;
 
 @Entity
-@Table(name = "inventory_category")
-public class InventoryCategory implements Serializable{
+@Table(name = "inventory_item_type")
+public class ItemType implements Serializable{
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5173462666280866055L;
+	private static final long serialVersionUID = -7891727008639447122L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "category_id")
-	private int categoryId;
+	@Column(name = "item_type_id")
+	private int itemTypeId;
 	
 	@Column(name = "code", nullable = false)
 	private String code;
 	
-	@Column(name = "name", nullable = false)
-	private String name;
+	@Column(name = "display_name", nullable = false)
+	private String displayName;
 	
-	@Column(name = "created_ts", nullable = false)
+	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
+	@ManyToOne
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts", nullable = false)
+	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;
+	@ManyToOne
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
-	public InventoryCategory() {
+	public ItemType() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-
-	public int getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
 	}
 
 	public String getCode() {
@@ -65,11 +62,11 @@ public class InventoryCategory implements Serializable{
 	}
 
 	public String getName() {
-		return name;
+		return displayName;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.displayName = name;
 	}
 
 	public Timestamp getCreatedTs() {
@@ -80,11 +77,19 @@ public class InventoryCategory implements Serializable{
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBy() {
+	public int getItemTypeId() {
+		return itemTypeId;
+	}
+
+	public void setItemTypeId(int itemTypeId) {
+		this.itemTypeId = itemTypeId;
+	}
+
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -96,12 +101,13 @@ public class InventoryCategory implements Serializable{
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
+
 
 }

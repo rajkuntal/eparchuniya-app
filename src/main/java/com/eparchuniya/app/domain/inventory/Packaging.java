@@ -1,12 +1,10 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.inventory;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,74 +12,77 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.eparchuniya.app.domain.User;
+
 @Entity
-@Table(name = "adm_location_served")
-public class ServedLocation implements Serializable{
+@Table(name = "inventory_packaging")
+public class Packaging implements Serializable {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4878488281716077986L;
+	private static final long serialVersionUID = -2806743192066485218L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "location_id", nullable = false)
-	private int locationId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "packaging_id")
+	private int packagingId;
 	
-	@Column(name = "name", length = 100)
-	private String name;
+	@ManyToOne
+	@JoinColumn(name = "item_type_id", updatable = false, nullable = false)
+	private ItemType itemType;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "store_id")
-	private Store store;
-
+	@ManyToOne
+	@JoinColumn(name = "unit_type_id", updatable = false, nullable = false)
+	private UnitType unitType;
+	
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 	
-	@Column(name = "additional_params")
-	private String additionalParams;
+	@Column(name = "addition_params")
+	private String additionParams;
 	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
-	public ServedLocation() {
+	public Packaging() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getLocationId() {
-		return locationId;
+	public int getPackagingId() {
+		return packagingId;
 	}
 
-	public void setLocationId(int locationId) {
-		this.locationId = locationId;
+	public void setPackagingId(int packagingId) {
+		this.packagingId = packagingId;
 	}
 
-	public String getDisplayName() {
-		return name;
+	public ItemType getItemType() {
+		return itemType;
 	}
 
-	public void setDisplayName(String displayName) {
-		this.name = displayName;
+	public void setItemType(ItemType itemType) {
+		this.itemType = itemType;
 	}
 
-	public Store getStore() {
-		return store;
+	public UnitType getUnitType() {
+		return unitType;
 	}
 
-	public void setStore(Store store) {
-		this.store = store;
+	public void setUnitType(UnitType unitType) {
+		this.unitType = unitType;
 	}
 
 	public Boolean getIsActive() {
@@ -92,12 +93,12 @@ public class ServedLocation implements Serializable{
 		this.isActive = isActive;
 	}
 
-	public String getAdditionalParams() {
-		return additionalParams;
+	public String getAdditionParams() {
+		return additionParams;
 	}
 
-	public void setAdditionalParams(String additionalParams) {
-		this.additionalParams = additionalParams;
+	public void setAdditionParams(String additionParams) {
+		this.additionParams = additionParams;
 	}
 
 	public Timestamp getCreatedTs() {
@@ -133,5 +134,3 @@ public class ServedLocation implements Serializable{
 	}
 
 }
-
-

@@ -23,13 +23,13 @@ public class UserRole implements Serializable {
 	@Column(name = "role_id")
 	private int roleId;
 	
-	@Column(name = "role_type")
+	@Column(name = "role_type", length = 50, nullable = false)
 	private String roleType;
 
-	@Column(name = "dispaly_name")
+	@Column(name = "dispaly_name", length = 50, nullable = false)
 	private String displayName;
 	
-	@Column(name = "name")
+	@Column(name = "name", length = 50, nullable = false)
 	private String name;
 
 	public UserRole() {

@@ -1,4 +1,4 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.shipment;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "shipment_route")
-public class ShipmentRoute implements Serializable {
+public class Route implements Serializable {
 	
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class ShipmentRoute implements Serializable {
 	private static final long serialVersionUID = 5375649595038596004L;
 	
 	@EmbeddedId
-	private ShipmentRoutePK shipmentRoutePK;
+	private RoutePK routePK;
 	
 	@Column(name = "route_priority")
 	private int routePriority;
@@ -25,18 +25,21 @@ public class ShipmentRoute implements Serializable {
 	@Column(name = "additional_params")
 	private String additionalParams;
 
-	public ShipmentRoute() {
+	public Route() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ShipmentRoutePK getShipmentRoutePK() {
-		return shipmentRoutePK;
+
+	public RoutePK getRoutePK() {
+		return routePK;
 	}
 
-	public void setShipmentRoutePK(ShipmentRoutePK shipmentRoutePK) {
-		this.shipmentRoutePK = shipmentRoutePK;
+
+	public void setRoutePK(RoutePK routePK) {
+		this.routePK = routePK;
 	}
+
 
 	public int getRoutePriority() {
 		return routePriority;

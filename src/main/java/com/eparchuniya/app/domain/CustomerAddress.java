@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,41 +28,41 @@ public class CustomerAddress implements Serializable {
 	@Column(name = "cust_address_id")
 	private int custAddressId;
 	
-	@Column(name = "house_number")
+	@Column(name = "house_number", length = 20)
 	private String houseNumber;
 	
-	@Column(name = "colony", nullable = false)
+	@Column(name = "colony", nullable = false, length = 50)
 	private String colony;
 	
-	@Column(name = "street")
+	@Column(name = "street", length = 100)
 	private String street1;
 	
 	@Column(name = "ward_number")
 	private int wardNumber;
 	
-	@Column(name = "landmark")
+	@Column(name = "landmark", length = 50)
 	private String landmark;
 	
-	@Column(name = "village_city", nullable = false)
+	@Column(name = "village_city", nullable = false, length = 50)
 	private String villageCity;
 	
-	@Column(name = "tehsil", nullable = false)
+	@Column(name = "tehsil", nullable = false, length = 50)
 	private String tehsil;
 	
-	@Column(name = "District", nullable = false)
+	@Column(name = "District", nullable = false, length = 50)
 	private String district;
 	
-	@Column(name = "state", nullable = false)
+	@Column(name = "state", nullable = false, length = 50)
 	private String state;
 	
 	@Column(name = "pincode", nullable = false)
-	private String pincode;
+	private Long pincode;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "location_id", nullable = false)
 	private ServedLocation locationServed;
 	
-	@Column(name = "is_active")
+	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 	
 	@Column(name = "latitude")
@@ -72,14 +74,14 @@ public class CustomerAddress implements Serializable {
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -177,11 +179,11 @@ public class CustomerAddress implements Serializable {
 		this.state = state;
 	}
 
-	public String getPincode() {
+	public Long getPincode() {
 		return pincode;
 	}
 
-	public void setPincode(String pincode) {
+	public void setPincode(Long pincode) {
 		this.pincode = pincode;
 	}
 

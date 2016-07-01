@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.eparchuniya.app.domain.UserGroup;
+import com.eparchuniya.app.domain.example.UserGroup;
 
 @Component("userGroupDAO")
 public class UserGroupDAOImpl implements UserGroupDAO {

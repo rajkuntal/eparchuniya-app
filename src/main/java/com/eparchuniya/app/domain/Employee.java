@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,16 +30,16 @@ public class Employee implements Serializable{
 	@Column(name = "employee_id", nullable = false)
 	private int employeeId;
 	
-	@Column(name = "first_name", nullable = false)
+	@Column(name = "first_name", nullable = false, length = 50)
 	private String firstName;
 	
-	@Column(name = "last_name", nullable = true)
+	@Column(name = "last_name", nullable = true, length = 50)
 	private String lastName;
 	
-	@Column(name = "father_name", nullable = true)
+	@Column(name = "father_name", nullable = true, length = 100)
 	private String fatherName;
 	
-	@Column(name = "email_id", nullable = true)
+	@Column(name = "email_id", nullable = true, length = 50)
 	private String emailId;
 	
 	@Column(name = "mobile_number", unique=true, nullable = false)
@@ -46,32 +48,35 @@ public class Employee implements Serializable{
 	@Column(name = "joining_date", nullable = false)
 	private Timestamp joiningDate;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "emp_address_id")
 	private EmployeeAddress employeeAddress;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "designation_id")
 	private Designation designation;
 	
 	@Column(name = "is_active")
 	private Boolean isActive;
 	
+	@Column(name = "last_day")
+	private Timestamp lastDay;
+
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 	
@@ -181,6 +186,14 @@ public class Employee implements Serializable{
 		this.designation = designation;
 	}
 
+	public Timestamp getLastDay() {
+		return lastDay;
+	}
+
+
+	public void setLastDay(Timestamp lastDay) {
+		this.lastDay = lastDay;
+	}
 
 	public Timestamp getCreatedTs() {
 		return createdTs;

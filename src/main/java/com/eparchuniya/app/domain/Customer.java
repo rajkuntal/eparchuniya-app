@@ -2,12 +2,13 @@ package com.eparchuniya.app.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.eparchuniya.app.common.util.Relation;
 
 @Entity
 @Table(name = "cust_customer")
@@ -31,21 +34,21 @@ public class Customer implements Serializable {
 	@Column(name = "customer_id", nullable = false)
 	private Long customerId;
 	
-	@Column(name = "first_name", nullable = false)
+	@Column(name = "first_name", nullable = false, length = 50)
 	private String firstName;
 	
-	@Column(name = "last_name", nullable = true)
+	@Column(name = "last_name", nullable = true, length = 50)
 	private String lastName;
 	
 	@Column(name = "relation", nullable = true)
 	private String relation;
 	
-	@Column(name = "faimly_person_name", nullable = false)
-	private String faimlyPersonName;
+	@Column(name = "faimly_person_name", nullable = false, length = 20)
+	private Relation faimlyPersonName;
 	
 	private String gender;
 	
-	@Column(name = "email_id", nullable = true)
+	@Column(name = "email_id", nullable = true, length = 20)
 	private String emailId;
 	
 	@Column(name = "mobile_number", nullable = false, unique = true)
@@ -53,14 +56,14 @@ public class Customer implements Serializable {
 	@ElementCollection(targetClass = Long.class)
 	private Set<Long> mobileNumbers;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "cust_customer_address"
 				, joinColumns = @JoinColumn(name = "customer_id")
 				, inverseJoinColumns = @JoinColumn(name = "cust_address_id"))
 	private Set<CustomerAddress> customerAddresses;
 	
-	@ManyToOne
-	@JoinColumn(name = "store_id")
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
 	
 	@Column(name = "is_active", nullable = false)
@@ -72,14 +75,14 @@ public class Customer implements Serializable {
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -120,11 +123,11 @@ public class Customer implements Serializable {
 		this.relation = relation;
 	}
 
-	public String getFaimlyPersonName() {
+	public Relation getFaimlyPersonName() {
 		return faimlyPersonName;
 	}
 
-	public void setFaimlyPersonName(String faimlyPersonName) {
+	public void setFaimlyPersonName(Relation faimlyPersonName) {
 		this.faimlyPersonName = faimlyPersonName;
 	}
 

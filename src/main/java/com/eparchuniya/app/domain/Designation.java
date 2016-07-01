@@ -2,16 +2,16 @@ package com.eparchuniya.app.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -28,26 +28,20 @@ public class Designation implements  Serializable{
 	@Column(name = "designation_id")
 	private int designationId;
 	
-	@Column(name = "code")
-	private String code;
-	
-	@Column(name = "name")
+	@Column(name = "name", nullable = false, length = 50)
 	private String name;
-	
-	@OneToMany(mappedBy = "designation")
-	private Set<Employee> employees;
 
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -64,28 +58,12 @@ public class Designation implements  Serializable{
 		this.designationId = designationId;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Set<Employee> getEmployees() {
-		return employees;
-	}
-
-	public void setEmployees(Set<Employee> employees) {
-		this.employees = employees;
 	}
 
 	public Timestamp getCreatedTs() {

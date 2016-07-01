@@ -2,7 +2,7 @@ package com.eparchuniya.app.dao;
 
 import java.util.List;
 
-import com.eparchuniya.app.domain.UserGroup;
+import com.eparchuniya.app.domain.example.UserGroup;
 
 public interface UserGroupDAO {
 	

@@ -1,4 +1,4 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.shipment;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "shipment_status")
-public class ShipmentStatus implements Serializable {
+public class Status implements Serializable {
 	
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class ShipmentStatus implements Serializable {
 	@Column(name = "status_flow")
 	private int statusFlow;
 
-	public ShipmentStatus() {
+	public Status() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

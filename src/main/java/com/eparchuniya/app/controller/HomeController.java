@@ -1,10 +1,14 @@
 package com.eparchuniya.app.controller;
 
 
-import javax.persistence.criteria.Order;
+import java.util.HashSet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -12,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,9 +31,12 @@ import com.eparchuniya.app.dao.StoreDao;
 import com.eparchuniya.app.domain.Designation;
 import com.eparchuniya.app.domain.Employee;
 import com.eparchuniya.app.domain.EmployeeAddress;
-import com.eparchuniya.app.domain.OrderSummary;
 import com.eparchuniya.app.domain.Store;
-import com.eparchuniya.app.domain.UserGroup;
+import com.eparchuniya.app.domain.example.Department;
+import com.eparchuniya.app.domain.example.EmpAddress;
+import com.eparchuniya.app.domain.example.EmployeeRequest;
+import com.eparchuniya.app.domain.example.UserGroup;
+import com.eparchuniya.app.domain.order.OrderSummary;
 
 
 @RestController
@@ -37,6 +45,9 @@ public class HomeController {
 	
 //	@Autowired
 //	private EmployeeService employeeService;
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 	@Autowired
 	private EmployeeDao employeeDao;
@@ -170,10 +181,79 @@ public class HomeController {
 		orderSummaryDao.addOrderSummary(orderSummary);
 		//Check Hello
 	}
-//	
-//	@RequestMapping(value="/adddesignation", method = RequestMethod.POST)
-//	public void addDesignation(Designation designation) {
-//		designationDao.addDesignation(designation);
-//	}
+	
+	@Transactional
+	@RequestMapping(value = "/addexampleemployee", method = RequestMethod.POST)
+	public void addexample(@RequestBody ExampleRequest example) {
+		
+		EmployeeRequest employeeRequest = new EmployeeRequest();
+		employeeRequest.setFirstName(example.getFirstName());
+		employeeRequest.setLastName(example.getLastName());
+		
+		HashSet<EmpAddress> empAddresses = new HashSet<EmpAddress>();
+		EmpAddress empAddress1 = new EmpAddress();
+		empAddress1.setColony(example.getColony1());
+		
+		EmpAddress empAddress2 = new EmpAddress();
+		empAddress2.setColony(example.getColony2());
+		
+		EmpAddress empAddress3 = new EmpAddress();
+		empAddress3.setColony(example.getColony3());
+		
+		empAddresses.add(empAddress1);
+		empAddresses.add(empAddress2);
+		empAddresses.add(empAddress3);
+		
+		Department department =  (Department) sessionFactory.getCurrentSession().get(Department.class, example.getDeptId());
+		
+		employeeRequest.setEmpAddresses(empAddresses);
+		employeeRequest.setDepartment(department);
+		
+		sessionFactory.getCurrentSession().saveOrUpdate(employeeRequest);
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/addexampleaddress/{id}", method = RequestMethod.POST)
+	public void addexampleaddress(@RequestBody ExampleRequest example, @PathVariable("id") int empId) {
+		
+		EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+		
+		EmpAddress empAddress1 = new EmpAddress();
+		empAddress1.setColony(example.getColony1());
+		
+		Hibernate.initialize(employeeRequest.getEmpAddresses());
+		
+		employeeRequest.getEmpAddresses().add(empAddress1);
+		
+		sessionFactory.getCurrentSession().saveOrUpdate(employeeRequest);
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/deleteexample/{id}", method = RequestMethod.POST)
+	public void deleteexample(@PathVariable("id") int empId) {
+		
+		EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+		
+		sessionFactory.getCurrentSession().delete(employeeRequest);
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/deleteexampleaddress/{id}", method = RequestMethod.POST)
+	public void deleteexampleaddress(@PathVariable("id") int addId) {
+		
+		EmpAddress empAddress = (EmpAddress) sessionFactory.getCurrentSession().get(EmpAddress.class, addId);
+		
+		sessionFactory.getCurrentSession().delete(empAddress);
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/addexampledepartment", method = RequestMethod.POST)
+	public void addexampldepartment(@RequestBody ExampleRequest example) {
+		
+		Department department = new Department();
+		department.setName(example.getDptName());
+		
+		sessionFactory.getCurrentSession().save(department);
+	}
 
 }

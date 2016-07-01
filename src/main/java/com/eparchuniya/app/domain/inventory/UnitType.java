@@ -1,4 +1,4 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.inventory;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -8,11 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.eparchuniya.app.domain.User;
 
 @Entity
 @Table(name = "inventory_unit_type")
-public class InventoryUnitType implements Serializable{
+public class UnitType implements Serializable{
 	/**
 	 * 
 	 */
@@ -26,22 +30,24 @@ public class InventoryUnitType implements Serializable{
 	@Column(name = "code", nullable = false)
 	private String code;
 	
-	@Column(name = "name", nullable = false)
-	private String name;
+	@Column(name = "display_name", nullable = false)
+	private String displayName;
 	
-	@Column(name = "created_ts", nullable = false)
+	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
+	@ManyToOne
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts", nullable = false)
+	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;
+	@ManyToOne
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
-	public InventoryUnitType() {
+	public UnitType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -62,12 +68,12 @@ public class InventoryUnitType implements Serializable{
 		this.code = code;
 	}
 
-	public String getName() {
-		return name;
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public Timestamp getCreatedTs() {
@@ -78,11 +84,11 @@ public class InventoryUnitType implements Serializable{
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -94,13 +100,12 @@ public class InventoryUnitType implements Serializable{
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	
 	
 }

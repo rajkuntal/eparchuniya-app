@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eparchuniya.app.domain.OrderSummary;
+import com.eparchuniya.app.domain.order.OrderSummary;
 
 @Transactional
 @Repository("orderSummaryDao")

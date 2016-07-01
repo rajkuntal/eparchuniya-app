@@ -33,15 +33,15 @@ public class WebAppConfiguration extends WebMvcConfigurerAdapter{
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
     
-    @Bean
-    public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/eparchuniya");
-        dataSource.setUsername("root");
-        dataSource.setPassword("citrus@123");
-         
-        return dataSource;
-    }
+//    @Bean
+//    public DataSource getDataSource() {
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+//        dataSource.setUrl("jdbc:mysql://localhost:3306/eparchuniya");
+//        dataSource.setUsername("root");
+//        dataSource.setPassword("citrus@123");
+//         
+//        return dataSource;
+//    }
 
 }

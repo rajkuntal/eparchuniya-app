@@ -1,4 +1,4 @@
-package com.eparchuniya.app.domain;
+package com.eparchuniya.app.domain.inventory;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -12,9 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.eparchuniya.app.domain.User;
+
 @Entity
 @Table(name = "inventory_stock_unit_type")
-public class InventoryStockUnitType implements Serializable {
+public class StockUnitType implements Serializable {
 	
 	/**
 	 * 
@@ -28,27 +30,29 @@ public class InventoryStockUnitType implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "type_id")
-	private InventoryItemType typeId;
+	private ItemType typeId;
 	
 	@Column(name = "code", nullable = false)
 	private String code;
 	
-	@Column(name = "name", nullable = false)
-	private String name;
+	@Column(name = "display_name", nullable = false)
+	private String displayName;
 	
-	@Column(name = "created_ts", nullable = false)
+	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
+	@ManyToOne
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts", nullable = false)
+	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;
+	@ManyToOne
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
-	public InventoryStockUnitType() {
+	public StockUnitType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -61,11 +65,11 @@ public class InventoryStockUnitType implements Serializable {
 		this.stockUnitTypeId = stockUnitTypeId;
 	}
 
-	public InventoryItemType getTypeId() {
+	public ItemType getTypeId() {
 		return typeId;
 	}
 
-	public void setTypeId(InventoryItemType typeId) {
+	public void setTypeId(ItemType typeId) {
 		this.typeId = typeId;
 	}
 
@@ -77,14 +81,6 @@ public class InventoryStockUnitType implements Serializable {
 		this.code = code;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Timestamp getCreatedTs() {
 		return createdTs;
 	}
@@ -93,11 +89,19 @@ public class InventoryStockUnitType implements Serializable {
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBy() {
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -109,11 +113,11 @@ public class InventoryStockUnitType implements Serializable {
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 
