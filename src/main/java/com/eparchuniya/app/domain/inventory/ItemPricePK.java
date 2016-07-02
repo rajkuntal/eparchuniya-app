@@ -2,27 +2,29 @@ package com.eparchuniya.app.domain.inventory;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class ItemPackagingPricePK implements Serializable{
+public class ItemPricePK implements Serializable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -619370949760683897L;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_id")
 	private Item item;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "packaging_id")
 	private Packaging packaging;
 
-	public ItemPackagingPricePK() {
+	public ItemPricePK() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

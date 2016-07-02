@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain.inventory;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,27 +30,34 @@ public class StockUnitType implements Serializable {
 	@Column(name = "stock_unit_type_id")
 	private int stockUnitTypeId;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "type_id")
 	private ItemType typeId;
 	
-	@Column(name = "code", nullable = false)
+	@Column(name = "code", nullable = false, length = 50)
 	private String code;
 	
-	@Column(name = "display_name", nullable = false)
+	@Column(name = "display_name", nullable = false, length = 100)
 	private String displayName;
+	
+	@Column(name = "quantity", nullable = false)
+	private Double quantity;
+	
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "unit_type_id")
+	private UnitType unitType;
 	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -71,6 +80,22 @@ public class StockUnitType implements Serializable {
 
 	public void setTypeId(ItemType typeId) {
 		this.typeId = typeId;
+	}
+
+	public Double getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Double quantity) {
+		this.quantity = quantity;
+	}
+
+	public UnitType getUnitType() {
+		return unitType;
+	}
+
+	public void setUnitType(UnitType unitType) {
+		this.unitType = unitType;
 	}
 
 	public String getCode() {

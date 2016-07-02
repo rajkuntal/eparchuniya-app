@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -51,10 +50,13 @@ public class Customer implements Serializable {
 	@Column(name = "email_id", nullable = true, length = 20)
 	private String emailId;
 	
-	@Column(name = "mobile_number", nullable = false, unique = true)
-	@JoinTable(name = "cust_customer_mobile")
-	@ElementCollection(targetClass = Long.class)
-	private Set<Long> mobileNumbers;
+//	@Column(name = "mobile_number", nullable = false, unique = true)
+//	@JoinTable(name = "cust_customer_mobile")
+//	@ElementCollection(targetClass = Long.class)
+//	private Set<Long> mobileNumbers;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer")
+	private Set<CustomerMobile> mobileNumbers;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "cust_customer_address"
@@ -66,8 +68,8 @@ public class Customer implements Serializable {
 	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
 	
-	@Column(name = "is_active", nullable = false)
-	private Boolean isActive;
+	@Column(name = "is_verified", nullable = false)
+	private Boolean isVerified;
 	
 	@Column(name = "blocked")
 	private Boolean blocked;
@@ -155,12 +157,30 @@ public class Customer implements Serializable {
 		this.store = store;
 	}
 
-	public Boolean getIsActive() {
-		return isActive;
+
+	public Set<CustomerMobile> getMobileNumbers() {
+		return mobileNumbers;
 	}
 
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+	public void setMobileNumbers(Set<CustomerMobile> mobileNumbers) {
+		this.mobileNumbers = mobileNumbers;
+	}
+
+	public Set<CustomerAddress> getCustomerAddresses() {
+		return customerAddresses;
+	}
+
+	public void setCustomerAddresses(Set<CustomerAddress> customerAddresses) {
+		this.customerAddresses = customerAddresses;
+	}
+
+
+	public Boolean getIsVerified() {
+		return isVerified;
+	}
+
+	public void setIsVerified(Boolean isVerified) {
+		this.isVerified = isVerified;
 	}
 
 	public Boolean getBlocked() {

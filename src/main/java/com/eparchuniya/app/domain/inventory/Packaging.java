@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain.inventory;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,31 +30,31 @@ public class Packaging implements Serializable {
 	@Column(name = "packaging_id")
 	private int packagingId;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_type_id", updatable = false, nullable = false)
 	private ItemType itemType;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "unit_type_id", updatable = false, nullable = false)
 	private UnitType unitType;
 	
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 	
-	@Column(name = "addition_params")
+	@Column(name = "addition_params", length = 1000)
 	private String additionParams;
 	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 

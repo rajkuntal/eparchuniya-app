@@ -22,7 +22,7 @@ public class Route implements Serializable {
 	@Column(name = "route_priority")
 	private int routePriority;
 	
-	@Column(name = "additional_params")
+	@Column(name = "additional_params", length = 1000)
 	private String additionalParams;
 
 	public Route() {

@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain.inventory;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,23 +30,23 @@ public class ItemType implements Serializable{
 	@Column(name = "item_type_id")
 	private int itemTypeId;
 	
-	@Column(name = "code", nullable = false)
+	@Column(name = "code", nullable = false, length = 20)
 	private String code;
 	
-	@Column(name = "display_name", nullable = false)
+	@Column(name = "display_name", nullable = false, length = 100)
 	private String displayName;
 	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 

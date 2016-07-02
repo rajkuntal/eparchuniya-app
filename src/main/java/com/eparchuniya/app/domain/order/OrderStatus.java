@@ -23,7 +23,7 @@ public class OrderStatus implements Serializable {
 	@Column(name = "status_id")
 	private int statusId;
 	
-	@Column(name = "name")
+	@Column(name = "name", length = 50)
 	private String name;
 	
 	@Column(name = "status_flow")

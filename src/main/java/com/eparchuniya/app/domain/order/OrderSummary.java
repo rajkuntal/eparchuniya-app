@@ -2,8 +2,10 @@ package com.eparchuniya.app.domain.order;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -13,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.eparchuniya.app.domain.Customer;
+import com.eparchuniya.app.domain.CustomerMobile;
 import com.eparchuniya.app.domain.EmployeeAddress;
 import com.eparchuniya.app.domain.Store;
 import com.eparchuniya.app.domain.shipment.Shipment;
@@ -31,23 +34,27 @@ public class OrderSummary implements Serializable {
 	@GeneratedValue(generator = "order_id")
 	private String orderId;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id")
 	private Customer customerId;
 	
-	@ManyToOne
-	@JoinColumn(name = "shipment_id")
-	private Shipment shipment;
-	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "cust_address_id")
 	private EmployeeAddress employeeAddress;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "mobile_number")
+	private CustomerMobile customerMobile;
+	
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "shipment_id")
+	private Shipment shipment;
+	
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "status_id")
 	private OrderStatus orderStatus;
 	

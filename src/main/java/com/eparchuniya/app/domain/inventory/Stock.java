@@ -2,8 +2,10 @@ package com.eparchuniya.app.domain.inventory;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,22 +24,22 @@ public class Stock implements Serializable{
 	private static final long serialVersionUID = -7096483305688475352L;
 
 	@Id
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_id")
 	private Item item;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "unit_type_id")
 	private UnitType itemUnitType;
 	
 	@Column(name = "quantity")
 	private Double quantity;
 	
-	@Column(name = "additional_params")
+	@Column(name = "additional_params", length = 1000)
 	private String additionalParams;
 
 	public Stock() {

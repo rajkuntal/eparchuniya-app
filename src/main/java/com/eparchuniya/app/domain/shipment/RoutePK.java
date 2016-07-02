@@ -2,7 +2,9 @@ package com.eparchuniya.app.domain.shipment;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -16,12 +18,12 @@ public class RoutePK implements Serializable{
 	 */
 	private static final long serialVersionUID = -4021810544655936288L;
 
-	@ManyToOne
-	@JoinColumn(name = "shipment_id")
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "shipment_id", nullable = false)
 	private Shipment shipmentId;
 	
-	@ManyToOne
-	@JoinColumn(name = "location_id")
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "location_id", nullable = false)
 	private ServedLocation locationId;
 
 	public RoutePK() {

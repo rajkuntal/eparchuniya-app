@@ -2,6 +2,7 @@ package com.eparchuniya.app.domain.order;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,10 +19,13 @@ public class OrderDetail implements Serializable {
 	@EmbeddedId
 	private OrderDetailPK orderDetailPK;
 	
+	@Column(name = "quantity", nullable = false)
 	private int quantity;
 	
+	@Column(name = "amount", nullable = false)
 	private Double amount;
 	
+	@Column(name = "cancled", nullable = false)
 	private Boolean cancled;
 
 	public OrderDetail() {

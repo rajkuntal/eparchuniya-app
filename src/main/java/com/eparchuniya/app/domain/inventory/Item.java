@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,56 +33,50 @@ public class Item implements Serializable {
 	@Column(name = "item_id")
 	private int itemId;
 	
-	@Column(name = "code", nullable = false)
+	@Column(name = "code", nullable = false, length = 20)
 	private String code;
 	
-	@Column(name = "display_name", nullable = false)
+	@Column(name = "display_name", nullable = false, length = 255)
 	private String displayName;
 	
-	@Column(name = "name")
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 	
-	@Column(name = "brand_name", nullable = false)
+	@Column(name = "brand_name", nullable = false, length = 100)
 	private String brandName;
 	
-	@Column(name = "additional_params")
+	@Column(name = "additional_params", length = 1000)
 	private String additionalParams;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id")
 	private Category category;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_type_id")
 	private ItemType itemType;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_unit_id")
 	private UnitType unit;
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "inventory_item_stock_unit"
 				, joinColumns = @JoinColumn(name = "item_id")
 				, inverseJoinColumns = @JoinColumn(name = "stock_unit_type_id"))
 	private Set<StockUnitType> inventoryStockUnitTypes;
 	
-	@ManyToMany
-	@JoinTable(name = "inventory_item_packaging"
-				, joinColumns = @JoinColumn(name = "item_id")
-				, inverseJoinColumns = @JoinColumn(name = "packaging_id"))
-	private Set<Packaging> inventoryPackagingTypes;
-	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -159,14 +155,6 @@ public class Item implements Serializable {
 
 	public void setInventoryStockUnitTypes(Set<StockUnitType> inventoryStockUnitTypes) {
 		this.inventoryStockUnitTypes = inventoryStockUnitTypes;
-	}
-
-	public Set<Packaging> getInventoryPackagingTypes() {
-		return inventoryPackagingTypes;
-	}
-
-	public void setInventoryPackagingTypes(Set<Packaging> inventoryPackagingTypes) {
-		this.inventoryPackagingTypes = inventoryPackagingTypes;
 	}
 
 	public Timestamp getCreatedTs() {

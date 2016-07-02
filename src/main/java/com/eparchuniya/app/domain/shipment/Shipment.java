@@ -3,8 +3,10 @@ package com.eparchuniya.app.domain.shipment;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -33,52 +35,52 @@ public class Shipment implements Serializable{
 	@Column(name = "shipment_id")
 	private String shipmentId;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 	
-	@ManyToOne
-	@JoinColumn(name = "status_id")
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "status_id", nullable = false)
 	private Status shipmentStatus;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "assigned_emp_id")
 	private Employee assignedEmpId;
 	
-	@Column(name = "total_amount")
+	@Column(name = "total_amount", nullable = false)
 	private Double totalAmount;
 	
 	@Column(name = "amount_to_emp")
 	private Double amountToEmp;
 	
-	@Column(name = "final_amount")
+	@Column(name = "final_amount", nullable = false)
 	private Double finalAmount;
 	
 	@Column(name = "created_at")
 	private Timestamp createdTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by")
 	private User createdBy;
 	
 	@Column(name = "modified_at")
 	private Timestamp modifiedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 	
 	@Column(name = "initiated_at")
 	private Timestamp initiatedTs;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "initiated_by")
 	private User initiatedBy;
 	
 	@Column(name = "completed_at")
 	private Timestamp completedAt;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "completed_by")
 	private User completedBy;
 

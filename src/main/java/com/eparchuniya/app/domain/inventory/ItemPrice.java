@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "inventory_item_packaging_price")
-public class ItemPackagingPrice implements Serializable{
+public class ItemPrice implements Serializable{
 	
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class ItemPackagingPrice implements Serializable{
 	private static final long serialVersionUID = 2720263731427968887L;
 
 	@EmbeddedId
-	private ItemPackagingPricePK itemPackagingPricePK;
+	private ItemPricePK itemPackagingPricePK;
 	
 	@Column(name = "packaging_price")
 	private Double packagingPrice;
@@ -25,19 +25,19 @@ public class ItemPackagingPrice implements Serializable{
 	@Column(name = "item_price")
 	private Double itemPrice;
 	
-	@Column(name = "additional_params")
+	@Column(name = "additional_params", length = 1000)
 	private String additionalParams;
 
-	public ItemPackagingPrice() {
+	public ItemPrice() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ItemPackagingPricePK getItemPackagingPricePK() {
+	public ItemPricePK getItemPackagingPricePK() {
 		return itemPackagingPricePK;
 	}
 
-	public void setItemPackagingPricePK(ItemPackagingPricePK itemPackagingPricePK) {
+	public void setItemPackagingPricePK(ItemPricePK itemPackagingPricePK) {
 		this.itemPackagingPricePK = itemPackagingPricePK;
 	}
 
