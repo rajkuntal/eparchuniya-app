@@ -2,10 +2,9 @@ package com.eparchuniya.app.dao;
 
 import com.eparchuniya.app.domain.Store;
 
-public interface StoreDao {
+public interface StoreDao extends GenericDoa<Store, Integer>{
 	
-	public void addStore(Store store);
+	Store findByCode(String code);
 	
-	Store findById(int id);
-
+	Store findByName(String name);
 }

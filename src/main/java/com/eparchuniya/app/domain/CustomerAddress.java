@@ -60,7 +60,7 @@ public class CustomerAddress implements Serializable {
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "location_id", nullable = false)
-	private ServedLocation locationServed;
+	private LocationServed locationServed;
 	
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
@@ -187,11 +187,11 @@ public class CustomerAddress implements Serializable {
 		this.pincode = pincode;
 	}
 
-	public ServedLocation getLocationServed() {
+	public LocationServed getLocationServed() {
 		return locationServed;
 	}
 
-	public void setLocationServed(ServedLocation locationServed) {
+	public void setLocationServed(LocationServed locationServed) {
 		this.locationServed = locationServed;
 	}
 

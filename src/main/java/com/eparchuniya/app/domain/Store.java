@@ -24,10 +24,10 @@ public class Store implements Serializable{
 	@Column(name = "store_id")
 	private int storeId;
 	
-	@Column(name = "code", nullable = false, length = 20)
+	@Column(name = "code", nullable = false, length = 20, unique = true)
 	private String code;
 	
-	@Column(name = "name", nullable = false, length = 50)
+	@Column(name = "name", nullable = false, length = 50, unique = true)
 	private String name;
 	
 	@Column(name = "is_active", nullable = false)

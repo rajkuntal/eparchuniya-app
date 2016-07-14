@@ -18,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 @Entity
 @Table(name = "admin_user")
 public class User implements Serializable {
@@ -32,11 +34,14 @@ public class User implements Serializable {
 	@Column(name = "user_id")
 	private int userId;
 	
-	@Column(name = "password", nullable = false, length = 25)
+	@Column(name = "user_name", nullable = false, unique = true, length = 25)
+	private String userName;
+	
+	@Column(name = "password", nullable = false)
 	private String password;
 	
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "employee_id", nullable = false)
+	@JoinColumn(name = "employee_id", nullable = true)
 	private Employee employee;
 	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -48,11 +53,11 @@ public class User implements Serializable {
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
 	
-	@Column(name = "created_at", nullable = false)
+	@Column(name = "created_at", nullable = true)
 	private Timestamp createdTs;
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by", nullable = false)
+	@JoinColumn(name = "created_by", nullable = true)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
@@ -74,13 +79,23 @@ public class User implements Serializable {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+	
+	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(String password) {	
+		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 	}
 
 	public Employee getEmployee() {

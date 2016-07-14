@@ -8,7 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.eparchuniya.app.domain.ServedLocation;
+import com.eparchuniya.app.domain.LocationServed;
 
 @Embeddable
 public class RoutePK implements Serializable{
@@ -24,7 +24,7 @@ public class RoutePK implements Serializable{
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "location_id", nullable = false)
-	private ServedLocation locationId;
+	private LocationServed locationId;
 
 	public RoutePK() {
 		super();
@@ -39,11 +39,11 @@ public class RoutePK implements Serializable{
 		this.shipmentId = shipmentId;
 	}
 
-	public ServedLocation getLocationId() {
+	public LocationServed getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(ServedLocation locationId) {
+	public void setLocationId(LocationServed locationId) {
 		this.locationId = locationId;
 	}
 

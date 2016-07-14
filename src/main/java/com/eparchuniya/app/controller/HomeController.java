@@ -3,13 +3,13 @@ package com.eparchuniya.app.controller;
 
 import java.util.HashSet;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.hibernate.Hibernate;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eparchuniya.app.dao.DesignationDao;
-import com.eparchuniya.app.dao.EmployeeAddressDao;
-import com.eparchuniya.app.dao.EmployeeDao;
-import com.eparchuniya.app.dao.OrderSummaryDao;
-import com.eparchuniya.app.dao.StoreDao;
 import com.eparchuniya.app.domain.Designation;
 import com.eparchuniya.app.domain.Employee;
 import com.eparchuniya.app.domain.EmployeeAddress;
@@ -41,31 +36,10 @@ import com.eparchuniya.app.domain.order.OrderSummary;
 
 @RestController
 public class HomeController {
-
 	
-//	@Autowired
-//	private EmployeeService employeeService;
 	
-	@Autowired
-	private SessionFactory sessionFactory;
-	
-	@Autowired
-	private EmployeeDao employeeDao;
-	
-	@Autowired
-	private StoreDao storeDao;
-	
-	@Autowired
-	private DesignationDao designationDao;
-	
-	@Autowired
-	private EmployeeAddressDao employeeAddressDao;
-	
-	@Autowired
-	private OrderSummaryDao orderSummaryDao;
-//	
-//	@Autowired
-//	private DesignationDao designationDao;
+	@PersistenceContext
+	private EntityManager em;
 	
 	@RequestMapping(value = "/eadmin", method = RequestMethod.GET)
 	public String GetHomePage() {
@@ -129,10 +103,11 @@ public class HomeController {
 		return "redirect:/login?logout";
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value="/checksecurity", method = RequestMethod.POST)
 	@ResponseBody
 	public UserGroup checkSecurity() {
+		
+		String str = getPrincipal();
 		return new UserGroup("1", "hello", "yes");
 	}
 
@@ -146,40 +121,6 @@ public class HomeController {
 			userName = principal.toString();
 		}
 		return userName;
-	}
-	
-	//@ResponseBody
-	@RequestMapping(value="/addemployee", method = RequestMethod.POST)
-	public void addEmployee(@RequestBody Employee emp){
-		employeeDao.saveEmployee(emp);
-	}
-	
-	//@ResponseBody
-	@RequestMapping(value="/addstore", method = RequestMethod.POST)
-	public void addStore(@RequestBody Store store) {
-		storeDao.addStore(store);
-	}
-	
-	@RequestMapping(value="/adddesignation", method = RequestMethod.POST)
-	public void addDesignation(@RequestBody Designation designation) {
-		designationDao.addDesignation(designation);
-	}
-	
-	@RequestMapping(value = "/addemployeeadress", method = RequestMethod.POST)
-	public void addEmployeeAddress(@RequestBody EmployeeAddress employeeAddress) {
-		employeeAddressDao.addEmployeeAddress(employeeAddress);
-	}
-	
-	@RequestMapping(value = "/checkobject", method = RequestMethod.POST, consumes="application/json")
-	public void addEmp(@RequestBody String employeeRequest) {
-		//
-	}
-	
-	
-	@RequestMapping(value = "/addordersummary", method = RequestMethod.POST)
-	public void addEmp(@RequestBody OrderSummary orderSummary) {
-		orderSummaryDao.addOrderSummary(orderSummary);
-		//Check Hello
 	}
 	
 	@Transactional
@@ -204,19 +145,23 @@ public class HomeController {
 		empAddresses.add(empAddress2);
 		empAddresses.add(empAddress3);
 		
-		Department department =  (Department) sessionFactory.getCurrentSession().get(Department.class, example.getDeptId());
+		//Department department =  (Department) sessionFactory.getCurrentSession().get(Department.class, example.getDeptId());
+		
+		Department department = em.find(Department.class, example.getDeptId());
 		
 		employeeRequest.setEmpAddresses(empAddresses);
 		employeeRequest.setDepartment(department);
 		
-		sessionFactory.getCurrentSession().saveOrUpdate(employeeRequest);
+		em.merge(employeeRequest);
 	}
 	
 	@Transactional
 	@RequestMapping(value = "/addexampleaddress/{id}", method = RequestMethod.POST)
 	public void addexampleaddress(@RequestBody ExampleRequest example, @PathVariable("id") int empId) {
 		
-		EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+		//EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+		
+		EmployeeRequest employeeRequest = em.find(EmployeeRequest.class, empId);
 		
 		EmpAddress empAddress1 = new EmpAddress();
 		empAddress1.setColony(example.getColony1());
@@ -225,25 +170,35 @@ public class HomeController {
 		
 		employeeRequest.getEmpAddresses().add(empAddress1);
 		
-		sessionFactory.getCurrentSession().saveOrUpdate(employeeRequest);
+		//sessionFactory.getCurrentSession().saveOrUpdate(employeeRequest);
+		
+		em.merge(employeeRequest);
 	}
 	
 	@Transactional
-	@RequestMapping(value = "/deleteexample/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteexampleemployee/{id}", method = RequestMethod.POST)
 	public void deleteexample(@PathVariable("id") int empId) {
 		
-		EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+//		EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+//		
+//		sessionFactory.getCurrentSession().delete(employeeRequest);
 		
-		sessionFactory.getCurrentSession().delete(employeeRequest);
+		EmployeeRequest employeeRequest = em.find(EmployeeRequest.class, empId);
+		
+		em.merge(employeeRequest);
 	}
 	
 	@Transactional
 	@RequestMapping(value = "/deleteexampleaddress/{id}", method = RequestMethod.POST)
 	public void deleteexampleaddress(@PathVariable("id") int addId) {
 		
-		EmpAddress empAddress = (EmpAddress) sessionFactory.getCurrentSession().get(EmpAddress.class, addId);
+//		EmpAddress empAddress = (EmpAddress) sessionFactory.getCurrentSession().get(EmpAddress.class, addId);
+//		
+//		sessionFactory.getCurrentSession().delete(empAddress);
 		
-		sessionFactory.getCurrentSession().delete(empAddress);
+		EmpAddress empAddress = em.find(EmpAddress.class, addId);
+		
+		em.remove(empAddress);
 	}
 	
 	@Transactional
@@ -253,7 +208,8 @@ public class HomeController {
 		Department department = new Department();
 		department.setName(example.getDptName());
 		
-		sessionFactory.getCurrentSession().save(department);
+		em.merge(department);
 	}
+
 
 }
