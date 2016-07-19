@@ -1,8 +1,6 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,10 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 @Entity
-@Table(name = "cust_customer_mobile")
-public class CustomerMobile implements Serializable {
+@Table(name = "cust_mobile")
+public class CustomerMobile extends BaseDomain {
 
 	/**
 	 * 
@@ -24,13 +25,15 @@ public class CustomerMobile implements Serializable {
 	@Column(name = "mobile_number")
 	private Long mobileNumber;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name  = "customer_id", nullable = false)
 	private Customer customer;
 	
-	@Column(name = "is_verified", nullable = false)
-	private Boolean isVerified;
+	@NotNull(message = "{CustomerMobile.isVerified can't be null}")
+	@Column(name = "verified", nullable = false)
+	private Boolean verified;
 	
+	@NotNull(message = "{CustomerMobile.blocked can't be null}")
 	@Column(name = "blocked", nullable = false)
 	private Boolean blocked;
 
@@ -56,10 +59,10 @@ public class CustomerMobile implements Serializable {
 	}
 
 	public Boolean getIsVerified() {
-		return isVerified;
+		return verified;
 	}
 
 	public void setIsVerified(Boolean isVerified) {
-		this.isVerified = isVerified;
+		this.verified = isVerified;
 	}
 }

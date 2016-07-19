@@ -1,9 +1,7 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,10 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 @Entity
 @Table(name = "cust_address")
-public class CustomerAddress implements Serializable {
+public class CustomerAddress extends BaseDomain {
 	
 	/**
 	 * 
@@ -31,6 +32,7 @@ public class CustomerAddress implements Serializable {
 	@Column(name = "house_number", length = 20)
 	private String houseNumber;
 	
+	@NotNull(message = "{CustomerAddress.colony can't be null}")
 	@Column(name = "colony", nullable = false, length = 50)
 	private String colony;
 	
@@ -40,30 +42,36 @@ public class CustomerAddress implements Serializable {
 	@Column(name = "ward_number")
 	private int wardNumber;
 	
-	@Column(name = "landmark", length = 50)
+	@Column(name = "landmark", length = 100)
 	private String landmark;
 	
-	@Column(name = "village_city", nullable = false, length = 50)
+	@NotNull(message = "{CustomerAddress.villageCity can't be null}")
+	@Column(name = "village_city", nullable = false)
 	private String villageCity;
 	
-	@Column(name = "tehsil", nullable = false, length = 50)
+	@NotNull(message = "{CustomerAddress.tehsil can't be null}")
+	@Column(name = "tehsil", nullable = false, length = 100)
 	private String tehsil;
 	
-	@Column(name = "District", nullable = false, length = 50)
+	@NotNull(message = "{CustomerAddress.district can't be null}")
+	@Column(name = "District", nullable = false, length = 100)
 	private String district;
 	
-	@Column(name = "state", nullable = false, length = 50)
+	@NotNull(message = "{CustomerAddress.state can't be null}")
+	@Column(name = "state", nullable = false, length = 100)
 	private String state;
 	
+	@NotNull(message = "{CustomerAddress.pincode can't be null}")
 	@Column(name = "pincode", nullable = false)
 	private Long pincode;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "location_id", nullable = false)
 	private LocationServed locationServed;
 	
-	@Column(name = "is_active", nullable = false)
-	private Boolean isActive;
+	@NotNull(message = "{CustomerAddress.isActive can't be null}")
+	@Column(name = "enabled", nullable = false)
+	private Boolean enabled;
 	
 	@Column(name = "latitude")
 	private Double latitude;
@@ -72,16 +80,16 @@ public class CustomerAddress implements Serializable {
 	private Double longitudes;
 	
 	@Column(name = "created_at", nullable = false)
-	private Timestamp createdTs;
+	private Date createdTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
+	private Date modifiedTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -132,11 +140,11 @@ public class CustomerAddress implements Serializable {
 	}
 
 	public Boolean getIsActive() {
-		return isActive;
+		return enabled;
 	}
 
 	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+		this.enabled = isActive;
 	}
 
 	public String getLandmark() {
@@ -211,11 +219,11 @@ public class CustomerAddress implements Serializable {
 		this.longitudes = longitudes;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
@@ -227,11 +235,11 @@ public class CustomerAddress implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
@@ -241,8 +249,6 @@ public class CustomerAddress implements Serializable {
 
 	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
-	}
-	
-	
+	}	
 
 }

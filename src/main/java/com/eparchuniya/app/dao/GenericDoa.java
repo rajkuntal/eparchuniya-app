@@ -1,9 +1,10 @@
 package com.eparchuniya.app.dao;
 
-import java.io.Serializable;
 import java.util.List;
 
-public interface GenericDoa<T extends Serializable, K> {
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
+
+public interface GenericDoa<T extends BaseDomain, K> {
 	
 	T save(T entity);
 	

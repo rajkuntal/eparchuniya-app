@@ -1,10 +1,8 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,13 +15,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
+
+
 @Entity
 @Table(name = "admin_user")
-public class User implements Serializable {
-	
+public class User extends BaseDomain {
+
 	/**
 	 * 
 	 */
@@ -33,37 +36,37 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private int userId;
-	
+
 	@Column(name = "user_name", nullable = false, unique = true, length = 25)
 	private String userName;
-	
+
 	@Column(name = "password", nullable = false)
 	private String password;
-	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "employee_id", nullable = true)
 	private Employee employee;
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "admin_user_role_mapping"
-				,joinColumns = @JoinColumn(name = "user_id")
-				,inverseJoinColumns = @JoinColumn(name = "role_id", unique = false))
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "admin_user_role_mapping", joinColumns = @JoinColumn(name = "user_id") , inverseJoinColumns = @JoinColumn(name = "role_id", unique = false) )
 	private Set<UserRole> userRoles;
-	
-	@Column(name = "is_active", nullable = false)
+
+	@Column(name = "is_active", nullable = true)
 	private Boolean isActive;
-	
-	@Column(name = "created_at", nullable = true)
-	private Timestamp createdTs;
-	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_at", nullable = true, columnDefinition="DateTime default NOW()")
+	private Date createdTs;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = true)
 	private User createdBy;
-	
-	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
-	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modified_at", columnDefinition="DateTime default NOW()")
+	private Date modifiedTs;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -79,8 +82,6 @@ public class User implements Serializable {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-	
-	
 
 	public String getUserName() {
 		return userName;
@@ -94,7 +95,7 @@ public class User implements Serializable {
 		return password;
 	}
 
-	public void setPassword(String password) {	
+	public void setPassword(String password) {
 		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 	}
 
@@ -122,11 +123,11 @@ public class User implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
@@ -138,11 +139,11 @@ public class User implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
@@ -154,5 +155,4 @@ public class User implements Serializable {
 		this.modifiedBy = modifiedBy;
 	}
 
-	
 }

@@ -11,8 +11,10 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
+
 @Repository("genericDao")
-public abstract class GenericDaoImpl<T extends Serializable, K> implements GenericDoa<T, K> {
+public abstract class GenericDaoImpl<T extends BaseDomain, K> implements GenericDoa<T, K> {
 	
 	@PersistenceContext
 	protected EntityManager em;

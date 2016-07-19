@@ -1,7 +1,6 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,10 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 @Entity
-@Table(name = "adm_location_served")
-public class LocationServed implements Serializable{
+@Table(name = "admin_location_served")
+public class LocationServed extends BaseDomain{
 	
 	/**
 	 * 
@@ -41,15 +44,17 @@ public class LocationServed implements Serializable{
 	@Column(name = "additional_params")
 	private String additionalParams;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_at", nullable = false)
-	private Timestamp createdTs;
+	private Date createdTs;
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
+	private Date modifiedTs;
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
@@ -100,11 +105,11 @@ public class LocationServed implements Serializable{
 		this.additionalParams = additionalParams;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
@@ -116,11 +121,11 @@ public class LocationServed implements Serializable{
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 

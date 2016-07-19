@@ -1,22 +1,19 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 @Entity
 @Table(name = "emp_designation")
-public class Designation implements  Serializable{
+public class Designation extends BaseDomain{
 	
 	/**
 	 * 
@@ -28,22 +25,10 @@ public class Designation implements  Serializable{
 	@Column(name = "designation_id")
 	private int designationId;
 	
+	@NotNull(message = "{Designation.name can't be null}")
+	@Size(max = 50, message = "{Designation.name max size 50}")
 	@Column(name = "name", nullable = false, length = 50)
 	private String name;
-
-	@Column(name = "created_at", nullable = false)
-	private Timestamp createdTs;
-	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by", nullable = false)
-	private User createdBy;
-	
-	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
-	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "modified_by")
-	private User modifiedBy;
 
 	public Designation() {
 		super();
@@ -64,38 +49,6 @@ public class Designation implements  Serializable{
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Timestamp getCreatedTs() {
-		return createdTs;
-	}
-
-	public void setCreatedTs(Timestamp createdTs) {
-		this.createdTs = createdTs;
-	}
-
-	public User getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Timestamp getModifiedTs() {
-		return modifiedTs;
-	}
-
-	public void setModifiedTs(Timestamp modifiedTs) {
-		this.modifiedTs = modifiedTs;
-	}
-
-	public User getModifiedBy() {
-		return modifiedBy;
-	}
-
-	public void setModifiedBy(User modifiedBy) {
-		this.modifiedBy = modifiedBy;
 	}
 	
 }

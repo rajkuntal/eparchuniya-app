@@ -8,7 +8,7 @@ import com.eparchuniya.app.domain.UserRole;
 
 public interface AdminService {
 	
-	Store saveStore(Store store);
+	Store saveStore(Store store) throws Exception;
 	
 	void updateStore(Store store);
 	
@@ -23,6 +23,10 @@ public interface AdminService {
 	long countAllStores();
 	
 	List<Store> getAllStores();
+	
+	boolean deactivateStore(int storeId);
+	
+	boolean activateStore(int storeId);
 	
 	/***************************** User Service **********************/
 	
@@ -39,6 +43,12 @@ public interface AdminService {
 	long countAllUsers();
 	
 	List<User> getAllUsers();
+	
+	boolean deactivateUser(int userId, int empId);
+	
+	boolean activateUser(int userId, int empId);
+	
+	User createAdminUserInAppStart();
 	
 /***************************** User Role Service **********************/
 	

@@ -36,28 +36,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		
 		auth.userDetailsService(customeUserDetailService).passwordEncoder(encoder);
+		//auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-	  http.authorizeRequests()
-	  	.antMatchers("/", "/home").permitAll()
-	  	.antMatchers("/adminmanagement/**").access("hasRole('ROLE_ADMIN')")
-	  	.and().formLogin().loginPage("/login").successHandler(customSuccessHandler)
-	  	.usernameParameter("userId").passwordParameter("password")
-	  	.and().csrf()
-	  	.and().exceptionHandling().accessDeniedPage("/Access_Denied");
+//	  http.authorizeRequests()
+//	  	.antMatchers("/", "/home").permitAll()
+//	  	.antMatchers("/adminmanagement/**").access("hasRole('ROLE_ADMIN')")
+//	  	.and().formLogin().loginPage("/login").successHandler(customSuccessHandler)
+//	  	.usernameParameter("userId").passwordParameter("password")
+//	  	.and().csrf()
+//	  	.and().exceptionHandling().accessDeniedPage("/Access_Denied");
 		
-//		http
-//	      .csrf().disable()
-//	      .authorizeRequests()
-//	        .antMatchers(HttpMethod.POST, "/checksecurity").access("hasRole('ROLE_ADMIN')")
-//	        .antMatchers(HttpMethod.PUT, "/checksecurity").authenticated()
-//	        .antMatchers(HttpMethod.DELETE, "/checksecurity").authenticated()
-//	        .anyRequest().permitAll()
-//	        .and()
-//	      .httpBasic().and()
-//	      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http
+	      .csrf().disable()
+	      .authorizeRequests()
+	        .antMatchers(HttpMethod.POST, "/**").access("hasRole('ROLE_ADMIN')")
+	        .antMatchers(HttpMethod.PUT, "/").authenticated()
+	        .antMatchers(HttpMethod.DELETE, "/").authenticated()
+	        .anyRequest().permitAll()
+	        .and()
+	      .httpBasic().and()
+	      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,9 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
+
 @Entity
 @Table(name = "admin_user_role")
-public class UserRole implements Serializable {
+public class UserRole extends BaseDomain {
 	
 	/**
 	 * 

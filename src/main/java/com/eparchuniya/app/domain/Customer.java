@@ -1,7 +1,6 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,12 +15,16 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import com.eparchuniya.app.common.util.Gender;
 import com.eparchuniya.app.common.util.Relation;
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 @Entity
 @Table(name = "cust_customer")
-public class Customer implements Serializable {
+public class Customer extends BaseDomain {
 	
 	/**
 	 * 
@@ -33,58 +36,57 @@ public class Customer implements Serializable {
 	@Column(name = "customer_id", nullable = false)
 	private Long customerId;
 	
-	@Column(name = "first_name", nullable = false, length = 50)
+	@NotNull(message = "{Customer.firstName can't be null}")
+	@Size(max = 100, message = "{Customer.firstName max size 100}")
+	@Column(name = "first_name", nullable = false, length = 100)
 	private String firstName;
 	
-	@Column(name = "last_name", nullable = true, length = 50)
+	@Column(name = "last_name", nullable = true, length = 100)
 	private String lastName;
 	
-	@Column(name = "relation", nullable = true)
-	private String relation;
+	@Column(name = "relation", nullable = true, length = 20)
+	private Relation relation;
 	
-	@Column(name = "faimly_person_name", nullable = false, length = 20)
-	private Relation faimlyPersonName;
+	@Column(name = "faimly_person_name", nullable = true, length = 100)
+	private String faimlyPersonName;
 	
-	private String gender;
+	private Gender gender;
 	
-	@Column(name = "email_id", nullable = true, length = 20)
+	@Column(name = "email_id", nullable = true, length = 50)
 	private String emailId;
 	
-//	@Column(name = "mobile_number", nullable = false, unique = true)
-//	@JoinTable(name = "cust_customer_mobile")
-//	@ElementCollection(targetClass = Long.class)
-//	private Set<Long> mobileNumbers;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
 	private Set<CustomerMobile> mobileNumbers;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinTable(name = "cust_customer_address"
 				, joinColumns = @JoinColumn(name = "customer_id")
 				, inverseJoinColumns = @JoinColumn(name = "cust_address_id"))
 	private Set<CustomerAddress> customerAddresses;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
 	
-	@Column(name = "is_verified", nullable = false)
-	private Boolean isVerified;
+	@NotNull(message = "{Customer.isVerified can't be null}")
+	@Column(name = "verified", nullable = false)
+	private Boolean verified;
 	
+	@NotNull(message = "{Customer.blocked can't be null}")
 	@Column(name = "blocked")
 	private Boolean blocked;
 	
 	@Column(name = "created_at", nullable = false)
-	private Timestamp createdTs;
+	private Date createdTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
 	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
+	private Date modifiedTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -117,27 +119,27 @@ public class Customer implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public String getRelation() {
+	public Relation getRelation() {
 		return relation;
 	}
 
-	public void setRelation(String relation) {
+	public void setRelation(Relation relation) {
 		this.relation = relation;
 	}
 
-	public Relation getFaimlyPersonName() {
+	public String getFaimlyPersonName() {
 		return faimlyPersonName;
 	}
 
-	public void setFaimlyPersonName(Relation faimlyPersonName) {
+	public void setFaimlyPersonName(String faimlyPersonName) {
 		this.faimlyPersonName = faimlyPersonName;
 	}
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 
@@ -176,11 +178,11 @@ public class Customer implements Serializable {
 
 
 	public Boolean getIsVerified() {
-		return isVerified;
+		return verified;
 	}
 
 	public void setIsVerified(Boolean isVerified) {
-		this.isVerified = isVerified;
+		this.verified = isVerified;
 	}
 
 	public Boolean getBlocked() {
@@ -191,11 +193,11 @@ public class Customer implements Serializable {
 		this.blocked = blocked;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
@@ -207,11 +209,11 @@ public class Customer implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
