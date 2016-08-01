@@ -1,22 +1,30 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.List;
+import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.eparchuniya.app.common.util.Gender;
+import com.eparchuniya.app.common.util.Relation;
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 @Entity
-@Table(name = "adm_customer")
-public class Customer implements Serializable {
+@Table(name = "cust_customer")
+public class Customer extends BaseDomain {
 	
 	/**
 	 * 
@@ -28,44 +36,59 @@ public class Customer implements Serializable {
 	@Column(name = "customer_id", nullable = false)
 	private Long customerId;
 	
-	@Column(name = "first_name", nullable = false)
+	@NotNull(message = "{Customer.firstName can't be null}")
+	@Size(max = 100, message = "{Customer.firstName max size 100}")
+	@Column(name = "first_name", nullable = false, length = 100)
 	private String firstName;
 	
-	@Column(name = "last_name", nullable = true)
+	@Column(name = "last_name", nullable = true, length = 100)
 	private String lastName;
 	
-	@Column(name = "relation", nullable = true)
-	private String relation;
+	@Column(name = "relation", nullable = true, length = 20)
+	private Relation relation;
 	
-	@Column(name = "faimly_person_name", nullable = false)
+	@Column(name = "faimly_person_name", nullable = true, length = 100)
 	private String faimlyPersonName;
 	
-	private String gender;
+	private Gender gender;
 	
-	@Column(name = "email_id", nullable = true)
+	@Column(name = "email_id", nullable = true, length = 50)
 	private String emailId;
 	
-	@ManyToOne
-	@JoinColumn(name = "store_id")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer")
+	private Set<CustomerMobile> mobileNumbers;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "cust_customer_address"
+				, joinColumns = @JoinColumn(name = "customer_id")
+				, inverseJoinColumns = @JoinColumn(name = "cust_address_id"))
+	private Set<CustomerAddress> customerAddresses;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
 	
-	@Column(name = "is_active", nullable = false)
-	private Boolean isActive;
+	@NotNull(message = "{Customer.isVerified can't be null}")
+	@Column(name = "verified", nullable = false)
+	private Boolean verified;
 	
+	@NotNull(message = "{Customer.blocked can't be null}")
 	@Column(name = "blocked")
 	private Boolean blocked;
 	
-	@Column(name = "created_ts", nullable = false)
-	private Timestamp createdTs;
+	@Column(name = "created_at", nullable = false)
+	private Date createdTs;
 	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts", nullable = false)
-	private Timestamp modifiedTs;
+	@Column(name = "modified_at")
+	private Date modifiedTs;
 	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
 	public Customer() {
 		super();
@@ -96,11 +119,11 @@ public class Customer implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public String getRelation() {
+	public Relation getRelation() {
 		return relation;
 	}
 
-	public void setRelation(String relation) {
+	public void setRelation(Relation relation) {
 		this.relation = relation;
 	}
 
@@ -112,11 +135,11 @@ public class Customer implements Serializable {
 		this.faimlyPersonName = faimlyPersonName;
 	}
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 
@@ -136,12 +159,30 @@ public class Customer implements Serializable {
 		this.store = store;
 	}
 
-	public Boolean getIsActive() {
-		return isActive;
+
+	public Set<CustomerMobile> getMobileNumbers() {
+		return mobileNumbers;
 	}
 
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+	public void setMobileNumbers(Set<CustomerMobile> mobileNumbers) {
+		this.mobileNumbers = mobileNumbers;
+	}
+
+	public Set<CustomerAddress> getCustomerAddresses() {
+		return customerAddresses;
+	}
+
+	public void setCustomerAddresses(Set<CustomerAddress> customerAddresses) {
+		this.customerAddresses = customerAddresses;
+	}
+
+
+	public Boolean getIsVerified() {
+		return verified;
+	}
+
+	public void setIsVerified(Boolean isVerified) {
+		this.verified = isVerified;
 	}
 
 	public Boolean getBlocked() {
@@ -152,38 +193,36 @@ public class Customer implements Serializable {
 		this.blocked = blocked;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	
-	
 
 }

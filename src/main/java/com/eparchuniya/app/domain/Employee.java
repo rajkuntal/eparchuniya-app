@@ -1,10 +1,11 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,11 +13,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
 
 
 @Entity
-@Table(name="adm_employee")
-public class Employee implements Serializable{
+@Table(name="emp_employee")
+public class Employee extends BaseDomain {
 	
 	/**
 	 * 
@@ -28,50 +35,69 @@ public class Employee implements Serializable{
 	@Column(name = "employee_id", nullable = false)
 	private int employeeId;
 	
-	@Column(name = "first_name", nullable = false)
+	@NotNull(message = "{Employee.firstName can't be null}")
+	@Column(name = "first_name", nullable = false, length = 100)
 	private String firstName;
 	
-	@Column(name = "last_name", nullable = true)
+	@Column(name = "last_name", nullable = true, length = 50)
 	private String lastName;
 	
-	@Column(name = "father_name", nullable = true)
+	@Column(name = "father_name", nullable = true, length = 100)
 	private String fatherName;
 	
-	@Column(name = "email_id", nullable = true)
+	@Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\."
+	        +"[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+	        +"(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+	             message="{invalid.email}")
+	@Column(name = "email_id", nullable = true, length = 50)
 	private String emailId;
 	
+	@NotNull(message = "{Employee.mobileNumber can't be null}")
+//	@Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$",
+//            message="{Employee.invalid.mobileNumber}")
 	@Column(name = "mobile_number", unique=true, nullable = false)
 	private Long mobileNumber;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@NotNull(message = "{Employee.joiningDate can't be null}")
 	@Column(name = "joining_date", nullable = false)
-	private Timestamp joiningDate;
+	private Date joiningDate;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@JoinColumn(name = "emp_address_id")
 	private EmployeeAddress employeeAddress;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id")
 	private Store store;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "designation_id")
 	private Designation designation;
 	
+	@NotNull(message = "{Employee.isActive can't be null}")
 	@Column(name = "is_active")
 	private Boolean isActive;
 	
-	@Column(name = "created_ts", nullable = false)
-	private Timestamp createdTs;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "last_day")
+	private Date lastDay;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_at", nullable = false)
+	private Date createdTs;
 	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "created_by", nullable = false)
+	private User createdBy;
 	
-	@Column(name = "modified_ts", nullable = false)
-	private Timestamp modifiedTs;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modified_at")
+	private Date modifiedTs;
 	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 	
 
 	public Employee() {
@@ -140,12 +166,12 @@ public class Employee implements Serializable{
 	}
 
 
-	public Timestamp getJoiningDate() {
+	public Date getJoiningDate() {
 		return joiningDate;
 	}
 
 
-	public void setJoiningDate(Timestamp joiningDate) {
+	public void setJoiningDate(Date joiningDate) {
 		this.joiningDate = joiningDate;
 	}
 
@@ -179,43 +205,51 @@ public class Employee implements Serializable{
 		this.designation = designation;
 	}
 
+	public Date getLastDay() {
+		return lastDay;
+	}
 
-	public Timestamp getCreatedTs() {
+
+	public void setLastDay(Date lastDay) {
+		this.lastDay = lastDay;
+	}
+
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
 
-	public int getcreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
 
-	public void setcreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 

@@ -1,21 +1,32 @@
 package com.eparchuniya.app.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import com.eparchuniya.app.domain.basedomain.BaseDomain;
+
 
 @Entity
-@Table(name = "adm_user")
-public class User implements Serializable {
-	
+@Table(name = "admin_user")
+public class User extends BaseDomain {
+
 	/**
 	 * 
 	 */
@@ -25,27 +36,39 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private int userId;
-	
+
+	@Column(name = "user_name", nullable = false, unique = true, length = 25)
+	private String userName;
+
+	@Column(name = "password", nullable = false)
 	private String password;
-	
-	@OneToOne
-	@JoinColumn(name = "employee_id")
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "employee_id", nullable = true)
 	private Employee employee;
-	
-	@Column(name = "is_active", nullable = false)
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "admin_user_role_mapping", joinColumns = @JoinColumn(name = "user_id") , inverseJoinColumns = @JoinColumn(name = "role_id", unique = false) )
+	private Set<UserRole> userRoles;
+
+	@Column(name = "is_active", nullable = true)
 	private Boolean isActive;
-	
-	@Column(name = "created_ts", nullable = false)
-	private Timestamp createdTs;
-	
-	@Column(name = "created_by", nullable = false)
-	private int createdBy;
-	
-	@Column(name = "modified_ts", nullable = false)
-	private Timestamp modifiedTs;
-	
-	@Column(name = "modified_by", nullable = false)
-	private int modifiedBy;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_at", nullable = true, columnDefinition="DateTime default NOW()")
+	private Date createdTs;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "created_by", nullable = true)
+	private User createdBy;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modified_at", columnDefinition="DateTime default NOW()")
+	private Date modifiedTs;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "modified_by")
+	private User modifiedBy;
 
 	public User() {
 		super();
@@ -60,12 +83,20 @@ public class User implements Serializable {
 		this.userId = userId;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = BCrypt.hashpw(password, BCrypt.gensalt(12));
 	}
 
 	public Employee getEmployee() {
@@ -76,6 +107,14 @@ public class User implements Serializable {
 		this.employee = employee;
 	}
 
+	public Set<UserRole> getUserRoles() {
+		return userRoles;
+	}
+
+	public void setUserRoles(Set<UserRole> userRoles) {
+		this.userRoles = userRoles;
+	}
+
 	public Boolean getIsActive() {
 		return isActive;
 	}
@@ -84,35 +123,35 @@ public class User implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
-	public int getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(int modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 

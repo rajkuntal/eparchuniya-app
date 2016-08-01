@@ -1,24 +1,20 @@
 package com.eparchuniya.app.service;
 
-import java.util.List;
-
+import com.eparchuniya.app.domain.Designation;
 import com.eparchuniya.app.domain.Employee;
 
- 
 public interface EmployeeService {
- 
-    Employee findById(int id);
-     
-    void saveEmployee(Employee employee);
-     
-    void updateEmployee(Employee employee);
-     
-    void deleteEmployeeBySsn(String ssn);
- 
-    List<Employee> findAllEmployees(); 
-     
-    Employee findEmployeeBySsn(String ssn);
- 
-    boolean isEmployeeSsnUnique(Integer id, String ssn);
-     
+	
+	/***************************** Employee Designation Service **********************/
+	
+	Designation saveDesignation(Designation designation);
+	
+	void updateDesignation(Designation designation);
+	
+	/***************************** Employee Service **********************/
+	
+	Employee saveEmployee(Employee employee);
+	
+	void updateEmployee(Employee employee);
+
 }

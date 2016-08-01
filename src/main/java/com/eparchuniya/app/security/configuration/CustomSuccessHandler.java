@@ -49,7 +49,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		}
 
 		if (isAdmin(roles)) {
-			url = "/admin";
+			url = "/eadmin";
 		} else if (isUser(roles)) {
 			url = "/home";
 		} else {

@@ -1,13 +1,21 @@
 package com.eparchuniya.app.security.configuration;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.eparchuniya.app.security.service.AuthenticationService;
 
 @Configuration
 @EnableWebSecurity
@@ -15,31 +23,38 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	CustomSuccessHandler customSuccessHandler;
+	
+	@Autowired
+	AuthenticationService customeUserDetailService;
+	
+	@Autowired
+	DataSource dataSource;
 
 	@Autowired
 	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("bill").password("abc123").roles("USER");
-		auth.inMemoryAuthentication().withUser("admin").password("root123").roles("ADMIN");
-		auth.inMemoryAuthentication().withUser("dba").password("root123").roles("ADMIN","DBA");
+		
+		PasswordEncoder encoder = new BCryptPasswordEncoder();
+		
+		auth.userDetailsService(customeUserDetailService).passwordEncoder(encoder);
+		//auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 //	  http.authorizeRequests()
-//	  	.antMatchers("/", "/home").access("hasRole('USER')")
-//	  	.antMatchers("/admin/**").access("hasRole('ADMIN')")
-//	  	.antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")
+//	  	.antMatchers("/", "/home").permitAll()
+//	  	.antMatchers("/adminmanagement/**").access("hasRole('ROLE_ADMIN')")
 //	  	.and().formLogin().loginPage("/login").successHandler(customSuccessHandler)
-//	  	.usernameParameter("ssoId").passwordParameter("password")
+//	  	.usernameParameter("userId").passwordParameter("password")
 //	  	.and().csrf()
 //	  	.and().exceptionHandling().accessDeniedPage("/Access_Denied");
 		
 		http
 	      .csrf().disable()
 	      .authorizeRequests()
-	        .antMatchers(HttpMethod.POST, "/checksecurity").authenticated()
-	        .antMatchers(HttpMethod.PUT, "/checksecurity").authenticated()
-	        .antMatchers(HttpMethod.DELETE, "/checksecurity").authenticated()
+	        .antMatchers(HttpMethod.POST, "/**").access("hasRole('ROLE_ADMIN')")
+	        .antMatchers(HttpMethod.PUT, "/").authenticated()
+	        .antMatchers(HttpMethod.DELETE, "/").authenticated()
 	        .anyRequest().permitAll()
 	        .and()
 	      .httpBasic().and()

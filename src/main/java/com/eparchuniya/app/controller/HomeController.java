@@ -1,60 +1,45 @@
 package com.eparchuniya.app.controller;
 
 
-import javax.persistence.criteria.Order;
+import java.util.HashSet;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.Hibernate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eparchuniya.app.dao.DesignationDao;
-import com.eparchuniya.app.dao.EmployeeAddressDao;
-import com.eparchuniya.app.dao.EmployeeDao;
-import com.eparchuniya.app.dao.OrderSummaryDao;
-import com.eparchuniya.app.dao.StoreDao;
 import com.eparchuniya.app.domain.Designation;
 import com.eparchuniya.app.domain.Employee;
 import com.eparchuniya.app.domain.EmployeeAddress;
-import com.eparchuniya.app.domain.OrderSummary;
 import com.eparchuniya.app.domain.Store;
-import com.eparchuniya.app.domain.UserGroup;
-import com.eparchuniya.app.service.EmployeeService;
+import com.eparchuniya.app.domain.example.Department;
+import com.eparchuniya.app.domain.example.EmpAddress;
+import com.eparchuniya.app.domain.example.EmployeeRequest;
+import com.eparchuniya.app.domain.example.UserGroup;
+import com.eparchuniya.app.domain.order.OrderSummary;
+
 
 @RestController
 public class HomeController {
-
 	
-//	@Autowired
-//	private EmployeeService employeeService;
 	
-	@Autowired
-	private EmployeeDao employeeDao;
-	
-	@Autowired
-	private StoreDao storeDao;
-	
-	@Autowired
-	private DesignationDao designationDao;
-	
-	@Autowired
-	private EmployeeAddressDao employeeAddressDao;
-	
-	@Autowired
-	private OrderSummaryDao orderSummaryDao;
-//	
-//	@Autowired
-//	private DesignationDao designationDao;
+	@PersistenceContext
+	private EntityManager em;
 	
 	@RequestMapping(value = "/eadmin", method = RequestMethod.GET)
 	public String GetHomePage() {
@@ -118,10 +103,11 @@ public class HomeController {
 		return "redirect:/login?logout";
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value="/checksecurity", method = RequestMethod.POST)
 	@ResponseBody
 	public UserGroup checkSecurity() {
+		
+		String str = getPrincipal();
 		return new UserGroup("1", "hello", "yes");
 	}
 
@@ -137,43 +123,93 @@ public class HomeController {
 		return userName;
 	}
 	
-	//@ResponseBody
-	@RequestMapping(value="/addemployee", method = RequestMethod.POST)
-	public void addEmployee(@RequestBody Employee emp){
-		employeeDao.saveEmployee(emp);
+	@Transactional
+	@RequestMapping(value = "/addexampleemployee", method = RequestMethod.POST)
+	public void addexample(@RequestBody ExampleRequest example) {
+		
+		EmployeeRequest employeeRequest = new EmployeeRequest();
+		employeeRequest.setFirstName(example.getFirstName());
+		employeeRequest.setLastName(example.getLastName());
+		
+		HashSet<EmpAddress> empAddresses = new HashSet<EmpAddress>();
+		EmpAddress empAddress1 = new EmpAddress();
+		empAddress1.setColony(example.getColony1());
+		
+		EmpAddress empAddress2 = new EmpAddress();
+		empAddress2.setColony(example.getColony2());
+		
+		EmpAddress empAddress3 = new EmpAddress();
+		empAddress3.setColony(example.getColony3());
+		
+		empAddresses.add(empAddress1);
+		empAddresses.add(empAddress2);
+		empAddresses.add(empAddress3);
+		
+		//Department department =  (Department) sessionFactory.getCurrentSession().get(Department.class, example.getDeptId());
+		
+		Department department = em.find(Department.class, example.getDeptId());
+		
+		employeeRequest.setEmpAddresses(empAddresses);
+		employeeRequest.setDepartment(department);
+		
+		em.merge(employeeRequest);
 	}
 	
-	//@ResponseBody
-	@RequestMapping(value="/addstore", method = RequestMethod.POST)
-	public void addStore(@RequestBody Store store) {
-		storeDao.addStore(store);
+	@Transactional
+	@RequestMapping(value = "/addexampleaddress/{id}", method = RequestMethod.POST)
+	public void addexampleaddress(@RequestBody ExampleRequest example, @PathVariable("id") int empId) {
+		
+		//EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+		
+		EmployeeRequest employeeRequest = em.find(EmployeeRequest.class, empId);
+		
+		EmpAddress empAddress1 = new EmpAddress();
+		empAddress1.setColony(example.getColony1());
+		
+		Hibernate.initialize(employeeRequest.getEmpAddresses());
+		
+		employeeRequest.getEmpAddresses().add(empAddress1);
+		
+		//sessionFactory.getCurrentSession().saveOrUpdate(employeeRequest);
+		
+		em.merge(employeeRequest);
 	}
 	
-	@RequestMapping(value="/adddesignation", method = RequestMethod.POST)
-	public void addDesignation(@RequestBody Designation designation) {
-		designationDao.addDesignation(designation);
+	@Transactional
+	@RequestMapping(value = "/deleteexampleemployee/{id}", method = RequestMethod.POST)
+	public void deleteexample(@PathVariable("id") int empId) {
+		
+//		EmployeeRequest employeeRequest = (EmployeeRequest) sessionFactory.getCurrentSession().get(EmployeeRequest.class, empId);
+//		
+//		sessionFactory.getCurrentSession().delete(employeeRequest);
+		
+		EmployeeRequest employeeRequest = em.find(EmployeeRequest.class, empId);
+		
+		em.merge(employeeRequest);
 	}
 	
-	@RequestMapping(value = "/addemployeeadress", method = RequestMethod.POST)
-	public void addEmployeeAddress(@RequestBody EmployeeAddress employeeAddress) {
-		employeeAddressDao.addEmployeeAddress(employeeAddress);
+	@Transactional
+	@RequestMapping(value = "/deleteexampleaddress/{id}", method = RequestMethod.POST)
+	public void deleteexampleaddress(@PathVariable("id") int addId) {
+		
+//		EmpAddress empAddress = (EmpAddress) sessionFactory.getCurrentSession().get(EmpAddress.class, addId);
+//		
+//		sessionFactory.getCurrentSession().delete(empAddress);
+		
+		EmpAddress empAddress = em.find(EmpAddress.class, addId);
+		
+		em.remove(empAddress);
 	}
 	
-	@RequestMapping(value = "/checkobject", method = RequestMethod.POST, consumes="application/json")
-	public void addEmp(@RequestBody String employeeRequest) {
-		//
+	@Transactional
+	@RequestMapping(value = "/addexampledepartment", method = RequestMethod.POST)
+	public void addexampldepartment(@RequestBody ExampleRequest example) {
+		
+		Department department = new Department();
+		department.setName(example.getDptName());
+		
+		em.merge(department);
 	}
-	
-	
-	@RequestMapping(value = "/addordersummary", method = RequestMethod.POST)
-	public void addEmp(@RequestBody OrderSummary orderSummary) {
-		orderSummaryDao.addOrderSummary(orderSummary);
-		//Check
-	}
-//	
-//	@RequestMapping(value="/adddesignation", method = RequestMethod.POST)
-//	public void addDesignation(Designation designation) {
-//		designationDao.addDesignation(designation);
-//	}
+
 
 }
