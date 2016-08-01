@@ -2,6 +2,8 @@ package com.eparchuniya.app.restcontroller;
 
 import java.util.Date;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +32,7 @@ public class EmployeeRestController {
 	}
 	
 	@RequestMapping(value = "/employee/add", method = RequestMethod.POST)
-	public Employee addEmployee(@RequestBody Employee employee) {
+	public Employee addEmployee(@Valid @RequestBody Employee employee) {
 		employee.setCreatedTs(new Date());
 		employee.setJoiningDate(new Date());
 		employee.setIsActive(true);

@@ -13,8 +13,8 @@ import com.eparchuniya.app.domain.Store;
 @Repository("storeDao")
 public class StoreDaoImpl extends GenericDaoImpl<Store, Integer> implements StoreDao {
 	
-	@PersistenceContext
-	private EntityManager em;
+//	@PersistenceContext
+//	private EntityManager em;
 
 	@SuppressWarnings("unchecked")
 	public Store findByCode(String code) {

@@ -15,7 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.eparchuniya.app.security.service.CustomeUserDetailService;
+import com.eparchuniya.app.security.service.AuthenticationService;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	CustomSuccessHandler customSuccessHandler;
 	
 	@Autowired
-	CustomeUserDetailService customeUserDetailService;
+	AuthenticationService customeUserDetailService;
 	
 	@Autowired
 	DataSource dataSource;

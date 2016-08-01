@@ -2,8 +2,6 @@ package com.eparchuniya.app.security.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -19,8 +17,8 @@ import com.eparchuniya.app.domain.User;
 import com.eparchuniya.app.domain.UserRole;
 import com.eparchuniya.app.service.AdminService;
 
-@Component("customeUserDetailService")
-public class CustomeUserDetailServiceImpl implements CustomeUserDetailService {
+@Component("authenticationService")
+public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Autowired
 	private AdminService adminService;

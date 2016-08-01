@@ -1,5 +1,6 @@
 package com.eparchuniya.app.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -7,9 +8,8 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.eparchuniya.app.dao.StoreDao;
@@ -18,12 +18,12 @@ import com.eparchuniya.app.dao.UserRoleDao;
 import com.eparchuniya.app.domain.Store;
 import com.eparchuniya.app.domain.User;
 import com.eparchuniya.app.domain.UserRole;
-import com.eparchuniya.app.domain.exception.UniqueKeyViolationException;
+import com.eparchuniya.app.exception.CustomUniqueKeyViolationException;
+import com.eparchuniya.app.exception.NotExistException;
 
+@Transactional
 @Service("adminService")
 public class AdminServiceImpl implements AdminService {
-	
-	private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 	
 	@Autowired
 	private StoreDao storeDao; 
@@ -36,63 +36,74 @@ public class AdminServiceImpl implements AdminService {
 	
 	/***************************** Store Service **********************/
 	
-	@Transactional()
-	public Store saveStore(Store store) throws UniqueKeyViolationException {
-		
-//		logger.info("checking for existence of code in admin_store");
-//		if(storeDao.isCodeExisting(store.getCode())) {
-//			throw new UniqueKeyViolationException(store.getCode() + " --> store'code already exists in admin_store table");
-//		}
-		logger.info("checking for existence of name in admin_store");
-		if(storeDao.isCodeExisting(store.getCode())) {
-			throw new UniqueKeyViolationException(store.getName() + " --> store'name already exists in admin_store table");
-		}	
+	public Store saveStore(Store store) throws CustomUniqueKeyViolationException {
+		boolean isNameExists = storeDao.isNameExisting(store.getName());
+		boolean isCodeExists = storeDao.isCodeExisting(store.getCode());
+		if(isNameExists || isCodeExists){
+			List<String> errors = new ArrayList<String>();
+			// check if store name already exist
+			if(isNameExists)
+				errors.add("an store already exists with this name");
+			// check if store code already exist
+			if(isCodeExists)
+				errors.add("an store already exists with this code");
+			throw new CustomUniqueKeyViolationException(errors);
+		}
 		return storeDao.save(store);
 	}
 
-	@Transactional
-	public void updateStore(Store store) {
+	public void updateStore(Store store) throws NotExistException {
+		if(storeDao.findById(store.getStoreId()) == null){
+			throw new NotExistException("this store does not exist");
+		}
+		Store storeByName = storeDao.findByName(store.getName());
+		Store storeByCode = storeDao.findByName(store.getCode());
+		List<String> errors = new ArrayList<String>();
+		// check if store name already exist
+		if(storeByName != null) {
+			if(storeByName.getStoreId() != store.getStoreId()){
+					errors.add("an store already exists with this name");
+				throw new CustomUniqueKeyViolationException(errors);
+			}
+		}
+		// check if store code already exist
+		if(storeByCode != null) {
+			if(storeByCode.getStoreId() != store.getStoreId()){
+					errors.add("an store already exists with this code");
+				throw new CustomUniqueKeyViolationException(errors);
+			}
+		}
 		storeDao.update(store);
-		
 	}
-
-	@Transactional
+	
 	public void deleteStore(Store store) {
 		storeDao.delete(store);
-		
 	}
 
-	@Transactional
 	public Store findStoreByStoreId(int storeId) {
 		return storeDao.findById(storeId);
 	}
 
-	@Transactional
 	public long countAllStores() {
 		return storeDao.countAll();
 	}
 
-	@Transactional
 	public List<Store> getAllStores() {
 		return storeDao.findAll();
 	}
 
-	@Transactional
 	public Store findStoreByCode(String code) {
 		return storeDao.findByCode(code);
 	}
-
-	@Transactional
+	
 	public Store findStoreByName(String name) {
 		return storeDao.findByName(name);
 	}
 	
-	@Transactional
 	public boolean deactivateStore(int storeId) {
 		return storeDao.deactivateStore(storeId);
 	}
 	
-	@Transactional
 	public boolean activateStore(int storeId) {
 		return storeDao.deactivateStore(storeId);
 	}
@@ -100,54 +111,44 @@ public class AdminServiceImpl implements AdminService {
 	
 	/***************************** User Service **********************/
 	
-	@Transactional
 	public User saveUser(User user) {
 		return userDao.save(user);
 	}
 
-	@Transactional
 	public void updateUser(User user) {
 		userDao.update(user);
 		
 	}
 
-	@Transactional
 	public void deleteUser(User user) {
 		userDao.delete(user);
 		
 	}
-
-	@Transactional
+	
 	public User findUserByUserId(int userId) {
 		return userDao.findById(userId);
 	}
 
-	@Transactional
 	public long countAllUsers() {
 		return userDao.countAll();
 	}
 
-	@Transactional
 	public List<User> getAllUsers() {
 		return userDao.findAll();
 	}
 	
-	@Transactional
 	public User findUserByName(String userName) {
 		return userDao.findByName(userName);
 	}
 	
-	@Transactional
 	public boolean deactivateUser(int userId, int empId) {
 		return userDao.deactivateUser(userId, empId);
 	}
 	
-	@Transactional
 	public boolean activateUser(int userId, int empId) {
 		return userDao.activateUser(userId, empId);
 	}
 	
-	@Transactional
 	public User createAdminUserInAppStart() {
 		User user1 = new User();
 		user1.setUserName("ADMIN");
@@ -189,34 +190,26 @@ public class AdminServiceImpl implements AdminService {
 	
 	/***************************** User Role Service **********************/
 	
-	@Transactional
 	public UserRole saveUserRole(UserRole userRole) {
 		return userRoleDao.save(userRole);
 	}
 
-	@Transactional
 	public void updateUserRole(UserRole userRole) {
 		userRoleDao.update(userRole);
-		
 	}
-
-	@Transactional
+	
 	public void deleteUserRole(UserRole userRole) {
 		userRoleDao.delete(userRole);
-		
 	}
 
-	@Transactional
 	public UserRole findUserByUserRoleId(int userRoleId) {
 		return userRoleDao.findById(userRoleId);
 	}
-
-	@Transactional
+	
 	public long countAllUserRoles() {
 		return userRoleDao.countAll();
 	}
 
-	@Transactional
 	public List<UserRole> getAllUserRoles() {
 		return userRoleDao.findAll();
 	}

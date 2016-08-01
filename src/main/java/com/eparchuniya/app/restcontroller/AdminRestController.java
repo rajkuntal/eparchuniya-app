@@ -4,10 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.PersistenceException;
+import javax.swing.ViewportLayout;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eparchuniya.app.domain.Store;
 import com.eparchuniya.app.domain.User;
-import com.eparchuniya.app.domain.exception.CustomPersistenceException;
-import com.eparchuniya.app.domain.exception.UniqueKeyViolationException;
+import com.eparchuniya.app.exception.ApiError;
+import com.eparchuniya.app.exception.CustomUniqueKeyViolationException;
+import com.eparchuniya.app.exception.NotExistException;
+import com.eparchuniya.app.exception.ResponseCode;
+import com.eparchuniya.app.exception.SuccessResponse;
 import com.eparchuniya.app.security.service.LoggedInUserService;
 import com.eparchuniya.app.service.AdminService;
 
@@ -36,31 +43,42 @@ public class AdminRestController {
 	private LoggedInUserService loggedInUserService;
 
 	@RequestMapping(value = "/store/add", method = RequestMethod.POST)
-	public ResponseEntity<Store> addStore(@RequestBody Store store) {
-		Store store1 = null;
-		try {
+	public ResponseEntity<?> addStore(@Valid @RequestBody Store store) {
+		try{
 			logger.info("saving new store " + store.getName());
-			store1 = adminService.saveStore(store);
-		} catch (UniqueKeyViolationException e) {
-			logger.error(e.getMessage());
-			return new ResponseEntity<Store>(HttpStatus.UNPROCESSABLE_ENTITY);
-		} catch (CustomPersistenceException e) {
-			logger.error(e.getMessage() + store.getName());
-			return new ResponseEntity<Store>(HttpStatus.UNPROCESSABLE_ENTITY);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+			adminService.saveStore(store);
+		} catch (CustomUniqueKeyViolationException ex) {
+			logger.error("error while saving new store --> " + store.getName() + " " + ex.getMessage());
+			ApiError apiError = new ApiError(ResponseCode.UNIQUEKEYVIOLATION, ex.getErrors());
+			return new ResponseEntity<ApiError>(apiError, HttpStatus.CONFLICT);
+		} catch(PersistenceException ex) {
+			logger.error("error while saving new store --> " + store.getName() + " " + ex.getMessage());
+			return new ResponseEntity<Store>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		logger.info(store.getName() +" entity saved successfully");
-		return new ResponseEntity<Store>(store ,HttpStatus.OK);
-
+		SuccessResponse successResponse = new SuccessResponse(ResponseCode.OK, "store created successfully");
+		return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/store/update", method = RequestMethod.POST)
-	public void modifyStore(@RequestBody Store store) {
+	public ResponseEntity<?> modifyStore(@Valid @RequestBody Store store) {
 
-		logger.info("updating store info " + store.getName());
-		adminService.updateStore(store);
+		try{
+			logger.info("updating new store " + store.getName());
+			adminService.updateStore(store);
+		} catch (NotExistException ex){
+			logger.error("error while updating store --> " + store.getName() + " " + ex.getMessage());
+			ApiError apiError = new ApiError(ResponseCode.NOTFOUND, ex.getMessage());
+			return new ResponseEntity<ApiError>(apiError, HttpStatus.NOT_FOUND);
+		} catch (CustomUniqueKeyViolationException ex) {
+			logger.error("error while updating store --> " + store.getName() + " " + ex.getMessage());
+			ApiError apiError = new ApiError(ResponseCode.UNIQUEKEYVIOLATION, ex.getErrors());
+			return new ResponseEntity<ApiError>(apiError, HttpStatus.CONFLICT);
+		} catch(PersistenceException ex) {
+			logger.error("error while updating store --> " + store.getName() + " " + ex.getMessage());
+			return new ResponseEntity<Store>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		SuccessResponse successResponse = new SuccessResponse(ResponseCode.OK, "store updated successfully");
+		return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/store", method = RequestMethod.GET)
@@ -89,7 +107,7 @@ public class AdminRestController {
 	}
 
 	@RequestMapping(value = "/user/activate/{userId}", method = RequestMethod.POST)
-	public void activateUser(@PathVariable int userId) {
+	public void activateUser(@Valid @PathVariable int userId) {
 		adminService.activateUser(userId, loggedInUserService.getUser().getUserId());
 	}
 
