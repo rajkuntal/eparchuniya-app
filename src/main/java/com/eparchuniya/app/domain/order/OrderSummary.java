@@ -14,10 +14,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.eparchuniya.app.domain.Customer;
-import com.eparchuniya.app.domain.CustomerMobile;
-import com.eparchuniya.app.domain.EmployeeAddress;
-import com.eparchuniya.app.domain.Store;
+import com.eparchuniya.app.domain.admin.Store;
+import com.eparchuniya.app.domain.customer.Customer;
+import com.eparchuniya.app.domain.customer.CustomerMobile;
+import com.eparchuniya.app.domain.employee.EmployeeAddress;
 import com.eparchuniya.app.domain.shipment.Shipment;
 
 @Entity

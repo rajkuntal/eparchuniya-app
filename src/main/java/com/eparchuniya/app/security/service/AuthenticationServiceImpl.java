@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.eparchuniya.app.domain.User;
-import com.eparchuniya.app.domain.UserRole;
+import com.eparchuniya.app.domain.admin.User;
+import com.eparchuniya.app.domain.admin.UserRole;
 import com.eparchuniya.app.service.AdminService;
 
 @Component("authenticationService")

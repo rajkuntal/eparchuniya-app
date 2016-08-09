@@ -8,7 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.eparchuniya.app.domain.LocationServed;
+import com.eparchuniya.app.domain.admin.LocationServed;
 
 @Embeddable
 public class RoutePK implements Serializable{

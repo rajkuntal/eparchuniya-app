@@ -1,16 +1,20 @@
 package com.eparchuniya.app.service;
 
+import java.util.Iterator;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eparchuniya.app.dao.CustomerAddressDao;
-import com.eparchuniya.app.dao.CustomerDao;
-import com.eparchuniya.app.dao.CustomerMobileDao;
-import com.eparchuniya.app.domain.Customer;
-import com.eparchuniya.app.domain.CustomerAddress;
-import com.eparchuniya.app.domain.CustomerMobile;
+import com.eparchuniya.app.dao.customer.CustomerAddressDao;
+import com.eparchuniya.app.dao.customer.CustomerDao;
+import com.eparchuniya.app.dao.customer.CustomerMobileDao;
+import com.eparchuniya.app.domain.customer.Customer;
+import com.eparchuniya.app.domain.customer.CustomerAddress;
+import com.eparchuniya.app.domain.customer.CustomerMobile;
+import com.eparchuniya.app.exception.CustomUniqueKeyViolationException;
+import com.eparchuniya.app.exception.NotExistException;
 
 @Transactional
 @Service("customerService")
@@ -27,20 +31,54 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	/****************** Mobile Services *************************************/
 	
-	public CustomerMobile addMobile(CustomerMobile mobileNumber) {
-		return customerMobileDao.save(mobileNumber);
+	public CustomerMobile addMobile(CustomerMobile customerMobile) throws CustomUniqueKeyViolationException {
+		// check if mob number already exists
+		if(customerMobileDao.isMobileExisting(customerMobile.getMobileNumber()) != null)
+			throw new CustomUniqueKeyViolationException("This mobile number is associated to other customer");
+		return customerMobileDao.save(customerMobile);
+	}
+	
+	public void updateMobile(CustomerMobile customerMobile) throws NotExistException, CustomUniqueKeyViolationException {
+		// check if mobile entity exists
+		if(customerMobileDao.findById(customerMobile.getId()) == null)
+			throw new NotExistException("this mobile is not associated to any customer");
+		CustomerMobile mobileExists = customerMobileDao.isMobileExisting(customerMobile.getMobileNumber());
+		// check if mob number already exists
+		if(mobileExists != null)
+		{
+			if(mobileExists.getId() != customerMobile.getId())
+				throw new CustomUniqueKeyViolationException("This mobile number is associated to other customer");
+		}
+		customerMobileDao.update(customerMobile);
 	}
 
-	public boolean verifyMobile(long mobileNumber) {
-		return customerMobileDao.verifyMobile(mobileNumber);
+	public boolean verifyMobile(long mobileNumber, int modifiedBy) throws NotExistException{
+		// check if mobile entity exists
+		if(customerMobileDao.isMobileExisting(mobileNumber) == null)
+			throw new NotExistException("this mobile is not associated to any customer");
+		return customerMobileDao.verifyMobile(mobileNumber, modifiedBy);
 	}
 
-	public boolean blockMobile(long mobileNumber) {
-		return customerMobileDao.blockMobile(mobileNumber);
+	public boolean blockMobile(long mobileNumber, int modifiedBy, String comments) throws NotExistException{
+		// check if mobile entity exists
+		if(customerMobileDao.isMobileExisting(mobileNumber) == null)
+			throw new NotExistException("this mobile is not associated to any customer");
+		return customerMobileDao.blockMobile(mobileNumber, modifiedBy, comments);
 	}
 
-	public boolean unblockMobile(long mobileNumber) {
-		return customerMobileDao.unblockMobile(mobileNumber);
+	public boolean unblockMobile(long mobileNumber, int modifiedBy, String comments) throws NotExistException{
+		// check if mobile entity exists
+		if(customerMobileDao.isMobileExisting(mobileNumber) == null)
+			throw new NotExistException("this mobile is not associated to any customer");
+		return customerMobileDao.unblockMobile(mobileNumber, modifiedBy, comments);
+	}
+	
+	public boolean isMobileExisting(long mobileNumber) {
+		// check is mobile number already exists
+		if(customerMobileDao.isMobileExisting(mobileNumber) != null)
+			return true;
+		else
+			return false;
 	}
 
 	/****************** Address Services *************************************/
@@ -49,35 +87,72 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerAddressDao.save(customerAddress);
 	}
 	
-	public boolean disableAddress(int addressId) {
-		return customerAddressDao.disableAddress(addressId);
+	public void updateAddress(CustomerAddress customerAddress) throws NotExistException {
+		// check if address entity exists
+		if(customerAddressDao.findById(customerAddress.getAddressId()) == null)
+			throw new NotExistException("this Address is not associated to any customer");
+		customerAddressDao.update(customerAddress);
+	}
+	
+	public boolean disableAddress(long addressId, int userId)  throws NotExistException {
+		// check if address entity exists
+		if(customerAddressDao.findById(addressId) == null)
+			throw new NotExistException("this Address is not associated to any customer");
+		return customerAddressDao.disableAddress(addressId, userId);
 	}
 
-	public boolean enableAddress(int addressId) {
-		return customerAddressDao.enableAddress(addressId);
+	public boolean enableAddress(long addressId, int userId)  throws NotExistException {
+		// check if address entity exists
+		if(customerAddressDao.findById(addressId) == null)
+			throw new NotExistException("this Address is not associated to any customer");
+		return customerAddressDao.enableAddress(addressId, userId);
 	}
 
 	/****************** Customer Services *************************************/
 	
-	public Customer addCustomer(Customer customer) {
+	public Customer addCustomer(Customer customer) throws CustomUniqueKeyViolationException {
+		// check if mobile number already exists
+		if(customer.getMobileNumbers() != null) {
+			if(!customer.getMobileNumbers().isEmpty()) {
+				Iterator<CustomerMobile> mobileIterator =  customer.getMobileNumbers().iterator();
+				while(mobileIterator.hasNext()){
+					CustomerMobile customerMobile = mobileIterator.next();
+					if(customerMobileDao.isMobileExisting(customerMobile.getMobileNumber()) != null)
+						throw new CustomUniqueKeyViolationException("This mobile number is already exists");
+				}
+			}
+		}
+		
 		return customerDao.save(customer);
 	}
 
-	public void updateCustomer(Customer customer) {
+	public void updateCustomer(Customer customer) throws NotExistException, CustomUniqueKeyViolationException {
+		// check customer is exists
+		if(customerDao.findById(customer.getCustomerId()) == null)
+			throw new NotExistException("This customer doesn't exists");
 		customerDao.update(customer);
 		
 	}
 
-	public boolean verifyCustomer(int customerId) {
-		return customerDao.verifyCustomer(customerId);
+	public boolean verifyCustomer(long customerId, int modifiedBy) throws NotExistException {
+		// check customer is exists
+		if(customerDao.findById(customerId) == null)
+			throw new NotExistException("This customer doesn't exists");
+		return customerDao.verifyCustomer(customerId, modifiedBy);
 	}
 
-	public boolean blockCustomer(int customerId) {
-		return customerDao.blockCustomer(customerId);
+	public boolean blockCustomer(long customerId, int modifiedBy, String commetns) throws NotExistException {
+		// check customer is exists
+		if(customerDao.findById(customerId) == null)
+			throw new NotExistException("This customer doesn't exists");
+		return customerDao.blockCustomer(customerId, modifiedBy, commetns);
 	}
 
-	public boolean unblockCustomer(int customerId) {
-		return customerDao.unblockCustomer(customerId);
+	public boolean unblockCustomer(long customerId, int modifiedBy, String comments)  throws NotExistException {
+		// check customer is exists
+		if(customerDao.findById(customerId) == null)
+			throw new NotExistException("This customer doesn't exists");
+		return customerDao.unblockCustomer(customerId, modifiedBy, comments);
 	}
 
 }

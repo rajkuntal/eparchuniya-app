@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.hibernate.Hibernate;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,15 +22,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eparchuniya.app.domain.Designation;
-import com.eparchuniya.app.domain.Employee;
-import com.eparchuniya.app.domain.EmployeeAddress;
-import com.eparchuniya.app.domain.Store;
 import com.eparchuniya.app.domain.example.Department;
 import com.eparchuniya.app.domain.example.EmpAddress;
 import com.eparchuniya.app.domain.example.EmployeeRequest;
 import com.eparchuniya.app.domain.example.UserGroup;
-import com.eparchuniya.app.domain.order.OrderSummary;
 
 
 @RestController

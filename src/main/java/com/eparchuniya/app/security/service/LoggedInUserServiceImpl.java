@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.eparchuniya.app.dao.UserDao;
-import com.eparchuniya.app.domain.User;
+import com.eparchuniya.app.dao.admin.UserDao;
+import com.eparchuniya.app.domain.admin.User;
 
 @Component("loggedInUserService")
 public class LoggedInUserServiceImpl implements LoggedInUserService {

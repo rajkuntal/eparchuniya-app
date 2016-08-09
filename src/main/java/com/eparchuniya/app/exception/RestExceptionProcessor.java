@@ -38,7 +38,7 @@ public class RestExceptionProcessor extends ResponseEntityExceptionHandler {
 			errors.add(error.getObjectName() + ":" + error.getDefaultMessage());
 		}
 		
-		ApiError apiError = new ApiError(ResponseCode.BADREQUEST, errors);
+		ApiError apiError = new ApiError(ResponseCode.BAD_REQUEST, errors);
 		return handleExceptionInternal(ex, apiError, headers, HttpStatus.BAD_REQUEST, request);
 		
 	}
@@ -48,7 +48,7 @@ public class RestExceptionProcessor extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex
 																		, HttpHeaders headers, HttpStatus status, WebRequest request){
 		String error = ex.getParameterName() + " Parameter is missing";
-		ApiError apiError = new ApiError(ResponseCode.BADREQUEST, error);
+		ApiError apiError = new ApiError(ResponseCode.BAD_REQUEST, error);
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), HttpStatus.BAD_REQUEST);
 	}
 }

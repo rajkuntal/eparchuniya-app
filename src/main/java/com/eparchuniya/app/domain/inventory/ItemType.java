@@ -14,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.eparchuniya.app.domain.User;
+import com.eparchuniya.app.domain.admin.User;
 
 @Entity
 @Table(name = "inventory_item_type")
