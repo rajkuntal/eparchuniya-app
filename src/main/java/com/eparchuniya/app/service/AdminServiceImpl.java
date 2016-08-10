@@ -9,15 +9,18 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.eparchuniya.app.dao.StoreDao;
-import com.eparchuniya.app.dao.UserDao;
-import com.eparchuniya.app.dao.UserRoleDao;
-import com.eparchuniya.app.domain.Store;
-import com.eparchuniya.app.domain.User;
-import com.eparchuniya.app.domain.UserRole;
+import com.eparchuniya.app.dao.admin.LocationServedDao;
+import com.eparchuniya.app.dao.admin.StoreDao;
+import com.eparchuniya.app.dao.admin.UserDao;
+import com.eparchuniya.app.dao.admin.UserRoleDao;
+import com.eparchuniya.app.dao.employee.DesignationDao;
+import com.eparchuniya.app.domain.admin.LocationServed;
+import com.eparchuniya.app.domain.admin.Store;
+import com.eparchuniya.app.domain.admin.User;
+import com.eparchuniya.app.domain.admin.UserRole;
+import com.eparchuniya.app.domain.employee.Designation;
 import com.eparchuniya.app.exception.CustomUniqueKeyViolationException;
 import com.eparchuniya.app.exception.NotExistException;
 
@@ -26,13 +29,19 @@ import com.eparchuniya.app.exception.NotExistException;
 public class AdminServiceImpl implements AdminService {
 	
 	@Autowired
-	private StoreDao storeDao; 
+	private StoreDao storeDao;
+	
+	@Autowired
+	private DesignationDao designationDao;
 	
 	@Autowired
 	private UserDao userDao;
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	private LocationServedDao locationServedDao;
 	
 	/***************************** Store Service **********************/
 	
@@ -100,12 +109,20 @@ public class AdminServiceImpl implements AdminService {
 		return storeDao.findByName(name);
 	}
 	
-	public boolean deactivateStore(int storeId) {
+	public boolean deactivateStore(int storeId) throws NotExistException {
+		// check existense of storeId
+		if(storeDao.findById(storeId) == null){
+			throw new NotExistException("This store doesn't exist");
+		}
 		return storeDao.deactivateStore(storeId);
 	}
 	
-	public boolean activateStore(int storeId) {
-		return storeDao.deactivateStore(storeId);
+	public boolean activateStore(int storeId) throws NotExistException {
+		// check existense of storeId
+		if(storeDao.findById(storeId) == null){
+			throw new NotExistException("This store doesn't exist");
+		}
+		return storeDao.activateStore(storeId);
 	}
 	
 	
@@ -212,6 +229,51 @@ public class AdminServiceImpl implements AdminService {
 
 	public List<UserRole> getAllUserRoles() {
 		return userRoleDao.findAll();
+	}
+	
+	
+	/************************** Location service ******************************/
+	
+	public LocationServed saveLocation(LocationServed locationServed) throws CustomUniqueKeyViolationException {
+		// check name is already exists
+		if(locationServedDao.findByName(locationServed.getName()) != null) {
+			throw new CustomUniqueKeyViolationException("Location is already exists with this name");
+		}
+		return locationServedDao.save(locationServed);
+	}
+	
+	public void updateLocation(LocationServed locationServed) throws CustomUniqueKeyViolationException, NotExistException {
+		// check location existance
+		if(locationServedDao.findById(locationServed.getLocationId()) == null) {
+			throw new NotExistException("This location doesn't exists");
+		}
+		
+		// check name is already exists
+		LocationServed locationServedByName = locationServedDao.findByName(locationServed.getName());
+		if(locationServedByName != null) {
+			if(locationServedByName.getLocationId() != locationServed.getLocationId()) {
+				throw new CustomUniqueKeyViolationException("Location is already exists with this name");
+			}
+		}
+		locationServedDao.update(locationServed);
+	}
+	
+	public boolean activateLocation(int locationId, int userId) throws NotExistException{
+		// check location existance
+		if(locationServedDao.findById(locationId) == null) {
+			throw new NotExistException("This location doesn't exists");
+		}
+		
+		return locationServedDao.activateLocation(locationId, userId);
+	}
+	
+	public boolean deActivateLocation(int locationId, int userId) throws NotExistException {
+		// check location existance
+		if(locationServedDao.findById(locationId) == null) {
+			throw new NotExistException("This location doesn't exists");
+		}
+		
+		return locationServedDao.deactivateLocation(locationId, userId);
 	}
 	
 }

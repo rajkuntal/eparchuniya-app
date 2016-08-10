@@ -3,9 +3,9 @@ package com.eparchuniya.app.exception;
 public enum ResponseCode {
 			OK(100),
 			ERROR(101),
-			BADREQUEST(102),
-			UNIQUEKEYVIOLATION(103),
-			NOTFOUND(104);
+			BAD_REQUEST(102),
+			UNIQUE_KEY_VIOLATION(103),
+			NOT_FOUND(104);
 	
 	private final int code;
 	

@@ -15,9 +15,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.eparchuniya.app.domain.Employee;
-import com.eparchuniya.app.domain.Store;
-import com.eparchuniya.app.domain.User;
+import com.eparchuniya.app.domain.admin.Store;
+import com.eparchuniya.app.domain.admin.User;
+import com.eparchuniya.app.domain.employee.Employee;
 
 
 @Entity

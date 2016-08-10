@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.eparchuniya.app.domain.Store;
+import com.eparchuniya.app.domain.admin.Store;
 
 @Entity
 @Table(name = "inventory_stock")

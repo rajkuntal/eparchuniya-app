@@ -1,6 +1,6 @@
 package com.eparchuniya.app.security.service;
 
-import com.eparchuniya.app.domain.User;
+import com.eparchuniya.app.domain.admin.User;
 
 public interface LoggedInUserService {
 	
