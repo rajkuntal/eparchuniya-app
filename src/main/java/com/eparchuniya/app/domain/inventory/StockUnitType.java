@@ -45,7 +45,7 @@ public class StockUnitType implements Serializable {
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "unit_type_id")
-	private UnitType unitType;
+	private ItemUnit unitType;
 	
 	@Column(name = "created_at", nullable = false)
 	private Timestamp createdTs;
@@ -90,11 +90,11 @@ public class StockUnitType implements Serializable {
 		this.quantity = quantity;
 	}
 
-	public UnitType getUnitType() {
+	public ItemUnit getUnitType() {
 		return unitType;
 	}
 
-	public void setUnitType(UnitType unitType) {
+	public void setUnitType(ItemUnit unitType) {
 		this.unitType = unitType;
 	}
 

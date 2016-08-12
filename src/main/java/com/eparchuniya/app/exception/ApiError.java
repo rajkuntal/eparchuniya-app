@@ -22,6 +22,7 @@ public class ApiError {
 	public ApiError(ResponseCode code, String error) {
 		super();
 		this.errors = Arrays.asList(error);
+		this.setResponseCode(code.getCode());
 	}
 
 	public List<String> getErrors() {

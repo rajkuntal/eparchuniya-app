@@ -19,8 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.eparchuniya.app.common.util.Gender;
-import com.eparchuniya.app.common.util.Relation;
+import com.eparchuniya.app.common.enums.Gender;
+import com.eparchuniya.app.common.enums.Relation;
 import com.eparchuniya.app.domain.admin.Store;
 import com.eparchuniya.app.domain.admin.User;
 import com.eparchuniya.app.domain.base.BaseDomain;

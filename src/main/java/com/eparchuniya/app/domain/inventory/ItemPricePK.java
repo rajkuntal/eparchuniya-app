@@ -1,26 +1,26 @@
 package com.eparchuniya.app.domain.inventory;
 
-import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.eparchuniya.app.domain.base.BaseDomain;
+
 @Embeddable
-public class ItemPricePK implements Serializable{
+public class ItemPricePK extends BaseDomain{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -619370949760683897L;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_id")
 	private Item item;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "packaging_id")
 	private Packaging packaging;
 

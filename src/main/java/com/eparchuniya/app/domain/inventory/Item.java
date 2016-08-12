@@ -1,7 +1,8 @@
 package com.eparchuniya.app.domain.inventory;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,12 +17,20 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.eparchuniya.app.domain.admin.User;
+import com.eparchuniya.app.domain.base.BaseDomain;
 
 @Entity
 @Table(name = "inventory_item")
-public class Item implements Serializable {
+public class Item extends BaseDomain {
 	
 	/**
 	 * 
@@ -33,32 +42,41 @@ public class Item implements Serializable {
 	@Column(name = "item_id")
 	private int itemId;
 	
-	@Column(name = "code", nullable = false, length = 20)
+	@Column(name = "code", nullable = false, length = 20, unique = true)
 	private String code;
 	
+	@Size(max = 255, message = "Item display Name cann't be greater than 255 characters")
+	@NotEmpty(message = "Item display Name cann't be empty")
+	@NotNull(message = "Item display Name cann't be null")
 	@Column(name = "display_name", nullable = false, length = 255)
 	private String displayName;
 	
+	@Size(max = 255, message = "Item Name cann't be greater than 255 characters")
+	@NotEmpty(message = "Item Name cann't be empty")
+	@NotNull(message = "Item Name cann't be null")
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 	
+	@Size(max = 255, message = "Item brand Name cann't be greater than 255 characters")
+	@NotEmpty(message = "Item brand Name cann't be empty")
+	@NotNull(message = "Item brand Name cann't be null")
 	@Column(name = "brand_name", nullable = false, length = 100)
 	private String brandName;
 	
 	@Column(name = "additional_params", length = 1000)
 	private String additionalParams;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id")
 	private Category category;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_type_id")
 	private ItemType itemType;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_unit_id")
-	private UnitType unit;
+	private ItemUnit unit;
 	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "inventory_item_stock_unit"
@@ -66,17 +84,22 @@ public class Item implements Serializable {
 				, inverseJoinColumns = @JoinColumn(name = "stock_unit_type_id"))
 	private Set<StockUnitType> inventoryStockUnitTypes;
 	
-	@Column(name = "created_at", nullable = false)
-	private Timestamp createdTs;
+	@Transient
+	private List<Packaging> packagings;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_ts", nullable = false)
+	private Date createdTs;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
-	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modified_ts")
+	private Date modifiedTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
@@ -141,11 +164,11 @@ public class Item implements Serializable {
 		this.itemType = itemType;
 	}
 
-	public UnitType getUnit() {
+	public ItemUnit getUnit() {
 		return unit;
 	}
 
-	public void setUnit(UnitType unit) {
+	public void setUnit(ItemUnit unit) {
 		this.unit = unit;
 	}
 
@@ -156,12 +179,20 @@ public class Item implements Serializable {
 	public void setInventoryStockUnitTypes(Set<StockUnitType> inventoryStockUnitTypes) {
 		this.inventoryStockUnitTypes = inventoryStockUnitTypes;
 	}
+	
+	public List<Packaging> getPackagings() {
+		return packagings;
+	}
 
-	public Timestamp getCreatedTs() {
+	public void setPackagings(List<Packaging> packagings) {
+		this.packagings = packagings;
+	}
+
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
@@ -173,11 +204,11 @@ public class Item implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 

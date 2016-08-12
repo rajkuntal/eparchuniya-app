@@ -1,9 +1,8 @@
 package com.eparchuniya.app.domain.inventory;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,12 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.eparchuniya.app.domain.admin.User;
+import com.eparchuniya.app.domain.base.BaseDomain;
 
 @Entity
-@Table(name = "inventory_unit_type")
-public class UnitType implements Serializable{
+@Table(name = "inventory_item_unit")
+public class ItemUnit extends BaseDomain {
 	/**
 	 * 
 	 */
@@ -26,40 +32,48 @@ public class UnitType implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "unit_type_id")
-	private int unitTypeId;
+	@Column(name = "unit_id")
+	private int unitId;
 	
-	@Column(name = "code", nullable = false, length = 20)
+	@Size(max = 20, message = "UnitType code cann't be greater than 20 characters")
+	@NotEmpty(message = "UnitType code cann't be empty")
+	@NotNull(message = "UnitType code cann't be null")
+	@Column(name = "code", nullable = false, length = 20, unique = true)
 	private String code;
 	
+	@Size(max = 100, message = "UnitType Display Name cann't be greater than 100 characters")
+	@NotEmpty(message = "UnitType Display Name cann't be empty")
+	@NotNull(message = "UnitType Display Name cann't be null")
 	@Column(name = "display_name", nullable = false, length = 100)
 	private String displayName;
 	
-	@Column(name = "created_at", nullable = false)
-	private Timestamp createdTs;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created_ts", nullable = false)
+	private Date createdTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
-	@Column(name = "modified_at")
-	private Timestamp modifiedTs;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modified_ts")
+	private Date modifiedTs;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "modified_by")
 	private User modifiedBy;
 
-	public UnitType() {
+	public ItemUnit() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getUnitTypeId() {
-		return unitTypeId;
+	public int getUnitId() {
+		return unitId;
 	}
 
-	public void setUnitTypeId(int unitTypeId) {
-		this.unitTypeId = unitTypeId;
+	public void setUnitId(int unitId) {
+		this.unitId = unitId;
 	}
 
 	public String getCode() {
@@ -78,11 +92,11 @@ public class UnitType implements Serializable{
 		this.displayName = displayName;
 	}
 
-	public Timestamp getCreatedTs() {
+	public Date getCreatedTs() {
 		return createdTs;
 	}
 
-	public void setCreatedTs(Timestamp createdTs) {
+	public void setCreatedTs(Date createdTs) {
 		this.createdTs = createdTs;
 	}
 
@@ -94,11 +108,11 @@ public class UnitType implements Serializable{
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getModifiedTs() {
+	public Date getModifiedTs() {
 		return modifiedTs;
 	}
 
-	public void setModifiedTs(Timestamp modifiedTs) {
+	public void setModifiedTs(Date modifiedTs) {
 		this.modifiedTs = modifiedTs;
 	}
 
@@ -109,5 +123,5 @@ public class UnitType implements Serializable{
 	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	
+
 }
